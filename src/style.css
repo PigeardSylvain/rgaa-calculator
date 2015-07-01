@@ -1,0 +1,400 @@
+h1,h2,h3,h4,h5,h6 {
+    font-size: 1em;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+	font-family: "Arial", sans-sherif;
+    color: #000;
+    background-color: #fff;
+    margin: 2em 0 0 0;	
+}
+
+section {
+    margin-top: -3.4em;
+}
+
+section article:first-child {
+    padding-top: 3.5em;
+}
+
+section .A, section .AA, section .AAA {
+    display: none;
+}
+
+section.A .A {
+    display: table-row;
+}
+
+section.AA .A, section.AA .AA {
+    display: table-row;
+}
+
+section.AAA .A, section.AAA .AA, section.AAA .AAA {
+    display: table-row;
+}
+
+.hide {
+    display: none;
+}
+
+.axs_hidden, input[type=radio] {    
+    position: absolute !important;
+    clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+    padding:0 !important;
+    border:0 !important;
+    height: 1px !important; 
+    width: 1px !important; 
+    overflow: hidden;
+}
+
+/* --- clearfix --- */	
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+ 
+.clearfix {
+    display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+    display: block;
+}
+ 
+* html .clearfix {
+    height: 1%;
+}
+
+/* Box sizing */
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* --- --- */
+
+header {				
+    position: fixed;
+    top: 0;
+    background: #333;				
+    color: #fff;
+    width: 100%;
+    padding: 0.5em;    
+    height: 2.4em;
+}
+
+header h1 {
+    position: absolute;
+    z-index: 1000;
+}
+
+h2 {
+    margin-left: .5em;
+    padding: 0 0 0 .4em;
+    margin: 0;
+    text-align: left;
+    font-size: 1.4em;
+    display: table-cell;
+    vertical-align: bottom;
+    height: 3em;    
+}
+
+article h2 span {
+    margin-left: .5em;
+}
+
+header a, header a:active, header a:visited, header:focus, header:visited {
+    color: #fff;
+}
+
+header .level {
+    position: absolute;
+    right: .4em;
+    top: .4em;
+}
+
+header .level label, 
+footer button {
+    display: inline-block;
+    text-align: center;
+    font-weight: bold;
+    background: #333;
+    color: #fff;
+    border: .15em solid #fff;
+    cursor: pointer;    
+}
+
+header .level label {
+    width: 3em;
+}
+
+footer button, footer button:active {
+    font-size: .7em;
+    margin: 0 1em 0 0;
+    padding: .2em .4em;
+    float: right;
+    margin-top: -3em;
+}
+
+footer button:hover {
+    background: #fff;
+    color: #333;
+}
+
+header .level [type=radio]:not([checked=checked])+label:hover {
+    background: #fff;
+    color: #000;
+}
+
+header .level [type=radio]:focus+label{
+    text-decoration: underline;
+}
+
+header [checked=checked]+label {
+    background: #fff;
+    color: #000;
+    border: .15em solid #fff;
+}
+
+table {
+    margin: 0;
+    width: 100%;
+}
+
+th, td {
+    border: .1em solid #888;
+    padding: .2em;
+}
+
+th {
+    background: #333;
+    color: #fff;
+    font-weight: bold;
+}
+article.color1 {    
+    border-left: solid .4em #4AB5E5;
+    border-right: solid .4em #4AB5E5;
+}
+article.color2 {    
+    border-left: solid .4em #4FBF87;
+    border-right: solid .4em #4FBF87;
+}
+article.color3 {    
+    border-left: solid .4em #A885D9;
+    border-right: solid .4em #A885D9;
+}
+article.color4 {
+    border-left: solid .4em #FFB5E5;
+    border-right: solid .4em #FFB5E5;
+}
+article.color5 {
+    border-left: solid .4em #FFDB00;
+    border-right: solid .4em #FFDB00;
+}
+
+#currentChapter {
+    font-size: 1.3em;
+}
+
+.color1 tr.edit {background-color: #4AB5E5;}
+.color1 tr.edit td.rate {background-color: #4AB5E5;}
+
+.color2 tr.edit {background-color: #4FBF87;}
+.color2 tr.edit td.rate {background-color: #4FBF87;}
+
+.color3 tr.edit {background-color: #A885D9;}
+.color3 tr.edit td.rate {background-color: #A885D9;}
+
+.color4 tr.edit {background-color: #FFB5E5;}
+.color4 tr.edit td.rate {background-color: #FFB5E5;}
+
+.color5 tr.edit {background-color: #FFDB00;}
+.color5 tr.edit td.rate {background-color: #FFDB00;}
+
+tr.edit td.rule {
+    font-weight: bold;
+}
+
+.color1 #currentChapter {
+    color: #4AB5E5;
+}
+.color2 #currentChapter {
+    color: #4FBF87;
+}
+.color3 #currentChapter {
+    color: #A885D9;
+}
+.color4 #currentChapter {
+    color: #FFB5E5;
+}
+.color5 #currentChapter {
+    color: #FFDB00;
+}
+
+header.color1 {
+    border-bottom: .2em solid #4AB5E5;
+}
+header.color2 {
+    border-bottom: .2em solid #4FBF87;
+}
+header.color3 {
+    border-bottom: .2em solid #A885D9;
+}
+header.color4 {
+    border-bottom: .2em solid #FFB5E5;
+}
+header.color5 {
+    border-bottom: .2em solid #FFDB00;
+}
+
+tr:hover {
+    background: #f0f0f0;
+}
+
+tr.edit td.rate {
+    background: #fff;
+}
+
+tr[aria-disabled=true] {
+    background: #fff;
+}
+
+tr td {
+    cursor: pointer;
+}
+
+tr[aria-disabled=true] td {
+    color: #757575;
+    background: #ddd;
+    text-decoration: line-through;
+    cursor: auto;
+}
+
+table .active {
+    width: 2em;
+}
+
+table .id {
+    width: 3em;
+}
+
+table .level {
+    width: 4em;
+}
+
+th.rate {
+    width: 8em;
+}
+
+td.rate {
+    text-align: center;
+    font-weight: bold;
+}
+
+td.rate input {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-weight: bold;
+    text-align: center;
+}
+    
+article {
+    padding: 0;
+}
+
+#currentChapter {
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    font-weight: bold;
+}
+
+footer {
+    background: #333;
+    margin-top: 3em;
+    padding-top: 2em;
+    color: #fff;
+    font-size: 1.4em;
+}
+
+footer h1 {
+    padding: .4em;
+    float: none;    
+    padding-bottom: 0;
+    font-size: 1.4em;
+}
+
+footer ul {
+    margin: 1em 0 1em 0;    
+}
+
+footer li {
+    list-style: none;
+}
+
+footer li span {
+    padding-right: .6em;
+    float: left;
+    width: 4em;
+    text-align: right;
+}
+
+footer textarea {
+    font-family: "Arial", sans-sherif;
+    height: 30em;
+    width: 100%;    
+    border: 0;
+    margin: 1em 0 4em 0;
+    font-weight: bold;
+    padding: 1em;    
+}
+
+a, footer a:active, footer a:visited, footer a:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+footer a, footer a:active, footer a:visited, footer a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+::selection {
+  background: #ddd; /* WebKit/Blink Browsers */
+}
+::-moz-selection {
+  background: #ddd; /* Gecko Browsers */
+}
+
+#projectName {
+    width: 80%;
+    font-weight: bold;
+    font-size: 1.4em;
+    border: 0;
+    margin: 1em 0 -1em .5em;
+    cursor: pointer;
+}
+
+#projectName:focus {
+    cursor: auto;    
+}
+
+#version {
+    float: left;
+    font-size: .5em;
+    font-weight: bold;
+    font-family: Arial;
+    margin: .5em;
+    margin-top: -2.5em;
+}

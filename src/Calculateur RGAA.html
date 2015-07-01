@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>Calculateur RGAA 3</title>
+
+        <script src="RGAA3.js"></script>
+        <script src="main.js"></script>
+        <link rel="stylesheet" href="style.css">
+
+	</head>
+
+	<body>
+        <header>
+            <h1><a aria-label="accéder aux scores" href="#footer">Calculateur RGAA 3</a></h1>
+            <div id="currentChapter"></div>
+            <span class="level">
+                <input type="radio" id="A" name="level" value="A">
+                <label title="RGAA niveau A" for="A" aria-label="niveau A">A</label>
+                <input type="radio" id="AA" name="level" value="AA" checked="checked">
+                <label title="RGAA niveau AA" for="AA" aria-label="niveau double A">AA</label>
+                <input type="radio" id="AAA" name="level" value="AAA">
+                <label title="RGAA niveau AAA" for="AAA" aria-label="niveau triple A">AAA</label>
+            </span>
+
+        </header>
+        <input id="projectName" type="text" aria-label="nom du projet" value="Nom du projet XXX">
+        <section>
+
+        </section>
+
+        <footer id="footer">
+            <h1>Score total <span></span></h1>
+            <ul id="scoreList">
+                    <!-- score list -->
+            </ul>
+            <div id="comment">
+                <h2><label for="commentArea">Commentaire</label></h2>
+                <textarea id="commentArea" placeholder="Insérer un commentaire"></textarea>
+            </div>
+            <button id="resetButton">Reset</button>
+            <span id="version">Version 1.0</span>
+        </footer>
+
+	</body>
+
+</html>

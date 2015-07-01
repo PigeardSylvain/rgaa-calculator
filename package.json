@@ -1,0 +1,19 @@
+{
+  "name": "calculateur-rgaa",
+  "version": "1.0.0",
+  "description": "permet de calculer le pourcentage de conformité d'une page aux règles RGAA",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "RGAA",
+    "accessiblity"
+  ],
+  "author": "Sylvain Pigeard",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-htmlmin": "^0.4.0",    
+    "grunt-inline": "^0.3.4"
+  }
+}
