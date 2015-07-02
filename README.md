@@ -10,6 +10,7 @@ Vous pouvez accéder au calculateur directement depuis cette page: [Calculateur 
 * Modifier le titre
 * Choisir le niveau (A, AA, AAA)
 * Saisir un pourcentage pour chaque règle. Soit en cliquant directement sur le nom de la règle soit en cliquant dans la colonne score.
+* Le score total s'affiche en bas de page.
 
 A tout moment vous pouvez enregistrer la page en local (fichier -> enregistrer sous) pour continuer plus tard.
 Vous pouvez également saisir un commentaire dans le champ situé en bas de page.
