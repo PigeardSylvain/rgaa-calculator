@@ -8,7 +8,12 @@ body {
 	font-family: "Arial", sans-sherif;
     color: #000;
     background-color: #fff;
-    margin: 2em 0 0 0;	
+    margin: 2em 0 0 0;
+}
+
+button, button:active {
+  padding: 0;
+  cursor: pointer;
 }
 
 section {
@@ -39,18 +44,18 @@ section.AAA .A, section.AAA .AA, section.AAA .AAA {
     display: none;
 }
 
-.axs_hidden, input[type=radio] {    
+.axs_hidden, input[type=radio] {
     position: absolute !important;
     clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
     clip: rect(1px, 1px, 1px, 1px);
     padding:0 !important;
     border:0 !important;
-    height: 1px !important; 
-    width: 1px !important; 
+    height: 1px !important;
+    width: 1px !important;
     overflow: hidden;
 }
 
-/* --- clearfix --- */	
+/* --- clearfix --- */
 .clearfix:after {
     content: ".";
     display: block;
@@ -59,15 +64,15 @@ section.AAA .A, section.AAA .AA, section.AAA .AAA {
     line-height: 0;
     height: 0;
 }
- 
+
 .clearfix {
     display: inline-block;
 }
- 
+
 html[xmlns] .clearfix {
     display: block;
 }
- 
+
 * html .clearfix {
     height: 1%;
 }
@@ -82,19 +87,68 @@ html {
 
 /* --- --- */
 
-header {				
+header {
     position: fixed;
     top: 0;
-    background: #333;				
+    background: #333;
     color: #fff;
     width: 100%;
-    padding: 0.5em;    
+    padding: 0.5em;
     height: 2.4em;
 }
 
 header h1 {
     position: absolute;
     z-index: 1000;
+    margin-left: 2em;
+}
+
+#btnMenu {
+  border: none;
+  background: none;
+  color: #fff;
+  font-size: 1em;
+  font-weight: bold;
+  position: absolute;
+  top: .3em;
+  z-index: 1000;
+  left: 0;
+}
+
+#btnMenu:before {
+  content:'\2630';
+  margin-right: .5em;
+  cursor: pointer;
+  padding: .2em;
+}
+
+#btnMenu:focus:before {
+  border: .15em solid #fff;
+}
+
+#menu[aria-expanded=false] {
+  display: none;
+}
+
+#menu {
+  position: absolute;
+  background: #444;
+  color: #fff;
+  list-style: none;
+  padding: .5em;
+  margin-top: 1.5em;
+  left: 0;
+  min-width: 12em;
+}
+
+#menu li {
+  padding: .2em;
+  cursor: pointer;
+}
+
+#menu li:focus, #menu li:hover {
+  background: #fff;
+  color: #000;
 }
 
 h2 {
@@ -105,7 +159,7 @@ h2 {
     font-size: 1.4em;
     display: table-cell;
     vertical-align: bottom;
-    height: 3em;    
+    height: 3em;
 }
 
 article h2 span {
@@ -122,7 +176,7 @@ header .level {
     top: .4em;
 }
 
-header .level label, 
+header .level label,
 footer button {
     display: inline-block;
     text-align: center;
@@ -130,7 +184,7 @@ footer button {
     background: #333;
     color: #fff;
     border: .15em solid #fff;
-    cursor: pointer;    
+    cursor: pointer;
 }
 
 header .level label {
@@ -180,15 +234,15 @@ th {
     color: #fff;
     font-weight: bold;
 }
-article.color1 {    
+article.color1 {
     border-left: solid .4em #4AB5E5;
     border-right: solid .4em #4AB5E5;
 }
-article.color2 {    
+article.color2 {
     border-left: solid .4em #4FBF87;
     border-right: solid .4em #4FBF87;
 }
-article.color3 {    
+article.color3 {
     border-left: solid .4em #A885D9;
     border-right: solid .4em #A885D9;
 }
@@ -264,6 +318,14 @@ tr.edit td.rate {
     background: #fff;
 }
 
+.checklistMode td.rate[data-completed=true]:before {
+    content: "OK";
+}
+
+.checklistMode td.rate[data-completed=false]:before {
+    content: "KO";
+}
+
 tr[aria-disabled=true] {
     background: #fff;
 }
@@ -300,6 +362,10 @@ td.rate {
     font-weight: bold;
 }
 
+.checklistMode td.rate span {
+    display: none;
+}
+
 td.rate input {
     width: 100%;
     margin: 0;
@@ -308,7 +374,7 @@ td.rate input {
     font-weight: bold;
     text-align: center;
 }
-    
+
 article {
     padding: 0;
 }
@@ -330,13 +396,13 @@ footer {
 
 footer h1 {
     padding: .4em;
-    float: none;    
+    float: none;
     padding-bottom: 0;
     font-size: 1.4em;
 }
 
 footer ul {
-    margin: 1em 0 1em 0;    
+    margin: 1em 0 1em 0;
 }
 
 footer li {
@@ -347,17 +413,17 @@ footer li span {
     padding-right: .6em;
     float: left;
     width: 4em;
-    text-align: right;
+    text-align: left;
 }
 
 footer textarea {
     font-family: "Arial", sans-sherif;
     height: 30em;
-    width: 100%;    
+    width: 100%;
     border: 0;
     margin: 1em 0 4em 0;
     font-weight: bold;
-    padding: 1em;    
+    padding: 1em;
 }
 
 a, footer a:active, footer a:visited, footer a:hover {
@@ -387,7 +453,7 @@ footer a, footer a:active, footer a:visited, footer a:hover {
 }
 
 #projectName:focus {
-    cursor: auto;    
+    cursor: auto;
 }
 
 #version {
