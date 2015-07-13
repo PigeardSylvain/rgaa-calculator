@@ -12,16 +12,24 @@
 
 	</head>
 
-	<body>
+	<body class="percentMode">
         <header>
-            <h1><a aria-label="accéder aux scores" href="#footer">Calculateur RGAA 3</a></h1>
+						<button id="btnMenu" aria-label="menu" aria-haspopup="true"></button>
+						<ul id="menu" role="menu" aria-expanded="false" aria-hidden="true">
+							<li role="menuitem" tabindex="0" id="btnChangeMode">Mode check-list</li>
+							<li role="menuitem" tabindex="0">Importer</li>
+							<li role="menuitem" tabindex="0">Exporter</li>
+						</ul>
+
+            <h1><a aria-label="Calcultaeur RGAA 3 - accéder aux scores" href="#footer">Calculateur RGAA 3</a></h1>
             <div id="currentChapter"></div>
+
             <span class="level">
-                <input type="radio" id="A" name="level" value="A">
+                <input type="radio" id="A" name="level" value="A" aria-label="niveau A">
                 <label title="RGAA niveau A" for="A" aria-label="niveau A">A</label>
-                <input type="radio" id="AA" name="level" value="AA" checked="checked">
+                <input type="radio" id="AA" name="level" value="AA" aria-label="niveau AA" checked="checked">
                 <label title="RGAA niveau AA" for="AA" aria-label="niveau double A">AA</label>
-                <input type="radio" id="AAA" name="level" value="AAA">
+                <input type="radio" id="AAA" name="level" value="AAA" aria-label="niveau AAA">
                 <label title="RGAA niveau AAA" for="AAA" aria-label="niveau triple A">AAA</label>
             </span>
 
