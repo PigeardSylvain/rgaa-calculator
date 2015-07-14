@@ -12,13 +12,13 @@
 
 	</head>
 
-	<body class="percentMode">
+	<body class="displayRules">
         <header>
 						<button id="btnMenu" aria-label="menu" aria-haspopup="true"></button>
 						<ul id="menu" role="menu" aria-expanded="false" aria-hidden="true">
-							<li role="menuitem" tabindex="0" id="btnChangeMode">Mode check-list</li>
-							<li role="menuitem" tabindex="0">Importer</li>
-							<li role="menuitem" tabindex="0">Exporter</li>
+							<li role="menuitem" tabindex="0" id="btnChangeMode"></li>
+							<li role="menuitem" tabindex="0" id="btnImport">Importer</li>
+							<li role="menuitem" tabindex="0" id="btnExport">Exporter</li>
 						</ul>
 
             <h1><a aria-label="Calcultaeur RGAA 3 - accéder aux scores" href="#footer">Calculateur RGAA 3</a></h1>
@@ -35,9 +35,22 @@
 
         </header>
         <input id="projectName" type="text" aria-label="nom du projet" value="Nom du projet XXX">
-        <section>
 
-        </section>
+        <section class="rulesSection"></section>
+
+				<section id="exportSection" class="exportSection">
+					<h2>Export JSON</h2>
+					<textarea id="exportArea"></textarea><br>
+					<button class="blackBtn" id="btnExportBack">Retour</button>
+				</section>
+
+				<section id="importSection" class="importSection">
+					<h2>Import JSON</h2>
+					<textarea id="importArea"></textarea><br>
+					<div id="importErrorMessage"></div>
+					<button class="blackBtn" id="btnImportBack">Retour</button>
+					<button class="blackBtn" id="btnStartImport">Importer</button>
+				</section>
 
         <footer id="footer">
             <h1>Score total <span></span></h1>
@@ -49,7 +62,7 @@
                 <textarea id="commentArea" placeholder="Insérer un commentaire"></textarea>
             </div>
             <button id="resetButton">Reset</button>
-            <span id="version">Version 1.0 - <a href="https://github.com/SylvainBzh/rgaa-calculator">Calculateur-RGAA sur github</a></span>
+            <span id="version">Version 2.0 - <a href="https://github.com/SylvainBzh/rgaa-calculator">Calculateur-RGAA sur github</a></span>
         </footer>
 
 	</body>

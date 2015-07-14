@@ -33,6 +33,7 @@ rgaa.init = function () {
 
     rgaa.initHeader();
     rgaa.updateTitle();
+    rgaa.initImportExport();
 
     // Init currentChapter event
     window.addEventListener("scroll", function () {
@@ -90,12 +91,11 @@ rgaa.init = function () {
     // Init score
     ul = document.getElementById('scoreList');
     ul.innerHTML = "";
-    rgaa.qsa("section h2", function (el) {
+    rgaa.qsa("section.rulesSection h2", function (el) {
         var li = document.createElement("li");
 
         li.setAttribute("id", "score-chapter" + i);
         li.innerHTML = el.innerHTML;
-
         li.children[0].setAttribute("href", "#chapter" + i);
 
         //li.appendChild(anchor);
@@ -146,6 +146,52 @@ rgaa.init = function () {
             rgaa.reset();
         }
     });
+
+};
+
+rgaa.initImportExport = function () {
+
+  document.getElementById("btnExportBack").addEventListener("click", function (e) {
+    document.body.classList.remove("displayExport");
+    document.body.classList.add("displayRules");
+    window.location.href = window.location.href.split("#")[0] + "#projectName";
+  });
+
+  document.getElementById("btnImportBack").addEventListener("click", function (e) {
+    document.body.classList.remove("displayImport");
+    document.body.classList.add("displayRules");
+    window.location.href = window.location.href.split("#")[0] + "#projectName";
+  })
+
+  document.getElementById("btnStartImport").addEventListener("click", function (e) {
+      var importString = document.getElementById("importArea").value, jsonObj;
+
+      try {
+        jsonObj = JSON.parse(importString);
+      } catch (e) {
+        document.getElementById("importErrorMessage").innerHTML = e.message;
+        return true;
+      }
+
+      rgaa.reset();
+      document.getElementById("projectName").value = jsonObj.name;
+      rgaa.setLevel(document.getElementById(jsonObj.level), true);
+      document.body.classList.remove(rgaa.CS.percentmode, rgaa.CS.checklistmode);
+      document.body.classList.add(jsonObj.mode);
+      document.getElementById("commentArea").value = jsonObj.comment;
+
+      jsonObj.rules.forEach(function (rule, i) {
+        var tr = document.getElementById(rule.id).parentNode;
+        tr.querySelector("td.rate input").value = rule.value;
+        rgaa.rateCellHide(tr.querySelector("td.rate"));
+        if (rule.disabled) {
+            tr.querySelector("input[type=checkbox]").click();
+        }
+      });
+
+      rgaa.computeAllScore();
+        document.getElementById("btnImportBack").click();
+  });
 
 };
 
@@ -240,7 +286,6 @@ rgaa.computeScore = function (article, isComputeAll) {
     score = nbRules === 0 ? "" : Math.round(score / nbRules);
     span = article.querySelector("h2 span");
     article.setAttribute("score", score);
-
     if (document.body.classList.contains(rgaa.CS.percentmode)) {
       score = score !== "" ? " " + score + "%" : " N/C";
     } else {
@@ -304,7 +349,7 @@ rgaa.rateSave = function (el) {
 
 rgaa.computeTotalScore = function () {
     var totalScore = 0, score, nb = 0, nbCompleted;
-    rgaa.qsa("section article", function (el) {
+    rgaa.qsa("section.rulesSection article", function (el) {
         score = el.getAttribute("score");
         if (score !== "") {
             totalScore += parseInt(score, 10);
@@ -353,6 +398,15 @@ rgaa.initMenu = function () {
     rgaa.toogleMenu(e);
   });
 
+  if (document.body.classList.contains(rgaa.CS.percentmode)) {
+    document.getElementById("btnChangeMode").innerHTML = rgaa.CS.modechecklist;
+  } else if (document.body.classList.contains(rgaa.CS.checklistmode)) {
+    document.getElementById("btnChangeMode").innerHTML = rgaa.CS.modepourcent;
+  } else {
+    document.body.classList.add(rgaa.CS.percentmode);
+    document.getElementById("btnChangeMode").innerHTML = rgaa.CS.modechecklist;
+  }
+
   document.getElementById("btnChangeMode").addEventListener("click", function (e) {
     if (document.body.classList.contains(rgaa.CS.percentmode)) {
       document.body.classList.remove(rgaa.CS.percentmode);
@@ -365,6 +419,38 @@ rgaa.initMenu = function () {
     }
     rgaa.closeMenu();
     rgaa.computeAllScore();
+  });
+
+  document.getElementById("btnExport").addEventListener("click", function (e) {
+    document.body.classList.remove("displayRules");
+    document.body.classList.add("displayExport");
+    window.location.href = window.location.href.split("#")[0] + "#exportSection";
+
+    var exportObj = {
+      name: document.getElementById("projectName").value,
+      level: rgaa.currentLevel,
+      mode: document.body.classList.contains(rgaa.CS.percentmode) ? rgaa.CS.percentmode : rgaa.CS.checklistmode,
+      comment: document.getElementById("commentArea").value,
+      rules: []
+    };
+
+    rgaa.qsa(".rulesSection tbody tr", function (tr) {
+      var rule = {};
+      rule.id = tr.querySelector(".rule").getAttribute("id");
+      rule.disabled = tr.getAttribute("aria-disabled") === "true" ? true : false;
+      rule.value = tr.querySelector("td.rate input").value;
+      exportObj.rules.push(rule);
+    });
+
+    document.getElementById("exportArea").value = JSON.stringify(exportObj);
+    rgaa.closeMenu();
+  });
+
+  document.getElementById("btnImport").addEventListener("click", function (e) {
+    document.body.classList.remove("displayRules");
+    document.body.classList.add("displayImport");
+    window.location.href = window.location.href.split("#")[0] + "#importSection";
+    rgaa.closeMenu();
   });
 
   // Trigger click event when enter key is pressed on menu items
@@ -426,7 +512,10 @@ rgaa.closeMenu = function () {
 };
 
 rgaa.setLevel = function (el, noCompute) {
-    document.getElementsByTagName("section")[0].setAttribute("class", "");
+    var section = document.getElementsByTagName("section")[0];
+
+    section.classList.remove("A", "AA", "AAA");
+
     rgaa.qsa("header [type=radio]", function (el) { el.removeAttribute("checked"); });
     el.setAttribute("checked", "checked");
     document.getElementsByTagName("section")[0].classList.add(el.value);

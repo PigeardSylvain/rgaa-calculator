@@ -17,7 +17,27 @@ button, button:active {
 }
 
 section {
-    margin-top: -3.4em;
+    display: none;
+}
+
+section.rulesSection {
+  margin-top: -3.4em;
+}
+
+.displayRules .rulesSection {
+  display: block;
+}
+
+.displayExport .exportSection {
+  display: block;
+}
+
+.displayImport .importSection {
+  display: block;
+}
+
+#importErrorMessage {
+    margin: .5em 0 .5em 1.5em;
 }
 
 section article:first-child {
@@ -177,7 +197,8 @@ header .level {
 }
 
 header .level label,
-footer button {
+footer button,
+section button {
     display: inline-block;
     text-align: center;
     font-weight: bold;
@@ -187,11 +208,32 @@ footer button {
     cursor: pointer;
 }
 
+section button {
+    float: left;
+    padding: .2em;
+}
+
+.blackBtn, .blackBtn:hover, .blackBtn:focus {
+  margin: .5em .5em 0 1em;
+  padding: .3em;
+  border: .2em solid #333;
+}
+
+.blackBtn:hover, .blackBtn:focus {
+  color: #333;
+  background: #fff;
+}
+
+.blackBtn:focus {
+  text-decoration: underline;
+}
+
 header .level label {
     width: 3em;
 }
 
-footer button, footer button:active {
+footer button,
+footer button:active {
     font-size: .7em;
     margin: 0 1em 0 0;
     padding: .2em .4em;
@@ -416,6 +458,18 @@ footer li span {
     text-align: left;
 }
 
+section textarea {
+  font-family: "Arial", sans-sherif;
+  height: 20em;
+  width: 80%;
+  border: 0;
+  border-top: .2em solid #333;
+  border: .2em solid #333;
+  margin: 1em;
+  font-weight: bold;
+  padding: 1em;
+}
+
 footer textarea {
     font-family: "Arial", sans-sherif;
     height: 30em;
@@ -450,10 +504,15 @@ footer a, footer a:active, footer a:visited, footer a:hover {
     border: 0;
     margin: 1em 0 -1em .5em;
     cursor: pointer;
+    display: none;
 }
 
 #projectName:focus {
     cursor: auto;
+}
+
+.displayRules #projectName {
+  display: inline;
 }
 
 #version {
