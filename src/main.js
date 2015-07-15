@@ -56,11 +56,11 @@ rgaa.init = function () {
     // Init rule event
     rgaa.qsa("tbody td.rule", function (td) {
         td.addEventListener("click", function (e) {
-            if (rgaa.editMode) {return true; }
             var tr = e.target.parentNode, input;
             input = tr.querySelector("td:last-child input");
 
             if (document.body.classList.contains(rgaa.CS.percentmode)) {
+              if (rgaa.editMode) {return true; }
               if (input.value) {
                   input.value = (Math.round(input.value / 10) * 10) + 10;
               } else {
@@ -70,10 +70,15 @@ rgaa.init = function () {
                   input.value = '';
               }
             } else {
-              if (input.value && input.value == "100") {
+              if (input.value == "100") {
                 input.value = "0";
+                input.setAttribute("aria-checked", "false");
+              } else if(input.value === "0") {
+                input.value = "";
+                input.setAttribute("aria-checked", "false");
               } else {
                 input.value = "100";
+                input.setAttribute("aria-checked", "true");
               }
             }
             rgaa.rateSave(input.parentNode);
@@ -91,7 +96,7 @@ rgaa.init = function () {
     // Init score
     ul = document.getElementById('scoreList');
     ul.innerHTML = "";
-    rgaa.qsa("section.rulesSection h2", function (el) {
+    rgaa.qsa("#rulesSection h2", function (el) {
         var li = document.createElement("li");
 
         li.setAttribute("id", "score-chapter" + i);
@@ -106,8 +111,10 @@ rgaa.init = function () {
     // Init input event
     rgaa.qsa("article input[type=text]", function (el) {
         el.addEventListener("focus", function (e) {
+          if (document.body.classList.contains(rgaa.CS.percentmode)) {
             rgaa.rateCellDisplay(el.parentNode);
-            rgaa.setEditMode(el.parentNode.parentNode, true);
+          }
+          rgaa.setEditMode(el.parentNode.parentNode, true);
         });
         el.addEventListener("blur", function (e) {
             window.setTimeout(function () {
@@ -116,9 +123,23 @@ rgaa.init = function () {
             }, 100);
         });
         el.addEventListener("keydown", function (e) {
+          if (document.body.classList.contains(rgaa.CS.checklistmode)) {
+            if (e.keyCode == 9) { // TAB
+              return true;
+            } else if (e.keyCode === 13 || e.keyCode === 32) {   // enter, space
+              el.parentNode.click();
+              e.preventDefault();
+            } else if (e.keyCode === 27) { // escape
+              el.value = "";
+              rgaa.rateSave(el.parentNode);
+            } else {
+              e.preventDefault();
+            }
+          } else {
             if (e.keyCode === 13) {
                 el.blur();
             }
+          }
         });
     });
 
@@ -151,16 +172,13 @@ rgaa.init = function () {
 
 rgaa.initImportExport = function () {
 
+// TODO gestion des back (désactivation du menu ?)
   document.getElementById("btnExportBack").addEventListener("click", function (e) {
-    document.body.classList.remove("displayExport");
-    document.body.classList.add("displayRules");
-    window.location.href = window.location.href.split("#")[0] + "#projectName";
+    rgaa.backToRules();
   });
 
   document.getElementById("btnImportBack").addEventListener("click", function (e) {
-    document.body.classList.remove("displayImport");
-    document.body.classList.add("displayRules");
-    window.location.href = window.location.href.split("#")[0] + "#projectName";
+    rgaa.backToRules();
   })
 
   document.getElementById("btnStartImport").addEventListener("click", function (e) {
@@ -176,13 +194,19 @@ rgaa.initImportExport = function () {
       rgaa.reset();
       document.getElementById("projectName").value = jsonObj.name;
       rgaa.setLevel(document.getElementById(jsonObj.level), true);
-      document.body.classList.remove(rgaa.CS.percentmode, rgaa.CS.checklistmode);
-      document.body.classList.add(jsonObj.mode);
+      rgaa.setMode(jsonObj.mode);
       document.getElementById("commentArea").value = jsonObj.comment;
 
       jsonObj.rules.forEach(function (rule, i) {
-        var tr = document.getElementById(rule.id).parentNode;
-        tr.querySelector("td.rate input").value = rule.value;
+        var input, tr = document.getElementById(rule.id).parentNode;
+        input = tr.querySelector("td.rate input");
+        input.value = rule.value;
+        if (rule.value === "100") {
+          input.setAttribute("aria-checked", "true");
+        } else {
+          input.setAttribute("aria-checked", "false");
+        }
+
         rgaa.rateCellHide(tr.querySelector("td.rate"));
         if (rule.disabled) {
             tr.querySelector("input[type=checkbox]").click();
@@ -190,14 +214,45 @@ rgaa.initImportExport = function () {
       });
 
       rgaa.computeAllScore();
-        document.getElementById("btnImportBack").click();
+      rgaa.backToRules();
   });
 
+};
+
+rgaa.setMode = function (mode) {
+  document.body.classList.remove(rgaa.CS.percentmode, rgaa.CS.checklistmode);
+  document.body.classList.add(mode);
+
+  if (mode === rgaa.CS.percentmode) {
+    document.getElementById("btnChangeMode").innerHTML = rgaa.CS.modechecklist;
+    rgaa.qsa("#rulesSection input", function (el) {
+      el.removeAttribute("role");
+      el.removeAttribute("aria-checked");
+    });
+  } else {
+    document.getElementById("btnChangeMode").innerHTML = rgaa.CS.modepourcent;
+    rgaa.qsa("#rulesSection input", function (el) {
+      el.setAttribute("role", "checkbox");
+      if (el.value === "100") {
+        el.setAttribute("aria-checked", "true");
+      } else {
+        el.setAttribute("aria-checked", "false");
+      }
+    });
+  }
+
+};
+
+rgaa.backToRules = function () {
+  document.querySelector("section.display").classList.remove("display");
+  document.getElementById("rulesSection").classList.add("display");
+  window.location.href = window.location.href.split("#")[0] + "#projectName";
 };
 
 rgaa.reset = function () {
     rgaa.qsa("article input[type=text]", function (el) {
         el.value = "";
+        el.removeAttribute("aria-checked");
     });
 
     rgaa.qsa("article td.rate", function (el) {
@@ -235,7 +290,7 @@ rgaa.computeAllScore = function () {
 };
 
 rgaa.computeLabel = function () {
-    var rules = {"A": 0, "AA": 0, "AAA": 0};
+    var rules = {"A": 0, "AA": 0, "AAA": 0}, label;
 
     rgaa.qsa("td.rate input", function (el) {
       if (el.value === "100") {
@@ -244,19 +299,22 @@ rgaa.computeLabel = function () {
     })
 
     if (rules["A"] === rgaa.nbRules["A"]) {
-      if (rules["AA"] >= (rgaa.nbRules["AA"] / 2)) {
-        if (rules["AA"] === rgaa.nbRules["AA"]) {
-          if (rules["AAA"] > 0) {
-            console.log("e accessible : niveau 5");
+        if (rules["AA"] >= (rgaa.nbRules["AA"] / 2)) {
+          if (rules["AA"] === rgaa.nbRules["AA"]) {
+            if (rules["AAA"] > 0) {
+              label = 'e-accessible: <strong>niveau 5</strong>';
+            } else {
+              label = 'e-accessible: <strong>niveau 4</strong>';
+            }
           } else {
-            console.log("e accessible : niveau 4");
+            label = 'e-accessible: <strong>niveau 3</strong>';
           }
         } else {
-          console.log("e accessible : niveau 3");
+          label = 'e-accessible: <strong>niveau 2</strong>';
         }
+        document.querySelector("#elabel").innerHTML = 'Cette page peut techniquement bénéficier du label <a target="_blank" title="Plus d\'info sur le label e-accessible" href="http://access42.net/Le-label-e-accessible-pour-les-administrations.html">' + label + '<span class="axs_hidden"> (nouvelle fenêtre)</span></a>.';
       } else {
-        console.log("e accessible : niveau 2");
-      }
+        document.querySelector("#elabel").innerHTML = '';
     }
 }
 
@@ -297,6 +355,7 @@ rgaa.computeScore = function (article, isComputeAll) {
     if (headerScore) {
         headerScore.innerHTML = score;
     }
+
     document.getElementById("score-" + span.parentNode.parentNode.parentNode.getAttribute("id")).children[0].children[0].innerHTML = score;
 
     if (!isComputeAll) {
@@ -349,7 +408,7 @@ rgaa.rateSave = function (el) {
 
 rgaa.computeTotalScore = function () {
     var totalScore = 0, score, nb = 0, nbCompleted;
-    rgaa.qsa("section.rulesSection article", function (el) {
+    rgaa.qsa("#rulesSection article", function (el) {
         score = el.getAttribute("score");
         if (score !== "") {
             totalScore += parseInt(score, 10);
@@ -403,27 +462,24 @@ rgaa.initMenu = function () {
   } else if (document.body.classList.contains(rgaa.CS.checklistmode)) {
     document.getElementById("btnChangeMode").innerHTML = rgaa.CS.modepourcent;
   } else {
-    document.body.classList.add(rgaa.CS.percentmode);
-    document.getElementById("btnChangeMode").innerHTML = rgaa.CS.modechecklist;
+    rgaa.setMode(rgaa.CS.checklistmode);
+    document.getElementById("btnChangeMode").innerHTML = rgaa.CS.modepourcent;
   }
 
   document.getElementById("btnChangeMode").addEventListener("click", function (e) {
     if (document.body.classList.contains(rgaa.CS.percentmode)) {
-      document.body.classList.remove(rgaa.CS.percentmode);
-      document.body.classList.add(rgaa.CS.checklistmode);
-      this.innerHTML = rgaa.CS.modepourcent;
+      rgaa.setMode(rgaa.CS.checklistmode);
     } else {
-      document.body.classList.remove(rgaa.CS.checklistmode);
-      document.body.classList.add(rgaa.CS.percentmode);
-      this.innerHTML = rgaa.CS.modechecklist;
+      rgaa.setMode(rgaa.CS.percentmode);
     }
     rgaa.closeMenu();
     rgaa.computeAllScore();
   });
 
   document.getElementById("btnExport").addEventListener("click", function (e) {
-    document.body.classList.remove("displayRules");
-    document.body.classList.add("displayExport");
+    document.getElementById("exportArea").value = "";
+    document.querySelector("section.display").classList.remove("display");
+    document.getElementById("exportSection").classList.add("display");
     window.location.href = window.location.href.split("#")[0] + "#exportSection";
 
     var exportObj = {
@@ -434,7 +490,7 @@ rgaa.initMenu = function () {
       rules: []
     };
 
-    rgaa.qsa(".rulesSection tbody tr", function (tr) {
+    rgaa.qsa("#rulesSection tbody tr", function (tr) {
       var rule = {};
       rule.id = tr.querySelector(".rule").getAttribute("id");
       rule.disabled = tr.getAttribute("aria-disabled") === "true" ? true : false;
@@ -447,8 +503,8 @@ rgaa.initMenu = function () {
   });
 
   document.getElementById("btnImport").addEventListener("click", function (e) {
-    document.body.classList.remove("displayRules");
-    document.body.classList.add("displayImport");
+    document.querySelector("section.display").classList.remove("display");
+    document.getElementById("importSection").classList.add("display");
     window.location.href = window.location.href.split("#")[0] + "#importSection";
     rgaa.closeMenu();
   });
@@ -478,7 +534,6 @@ rgaa.initMenu = function () {
   // Trigger click event when enter key is pressed on menu items
   rgaa.qsa("#btnMenu", function (el) {
     el.addEventListener("keydown", function (e) {
-      console.log(e.keyCode);
       if (e.keyCode == 27) { // escape key
         rgaa.closeMenu();
       } else if(e.keyCode == 40) { // down arrow
@@ -556,7 +611,7 @@ rgaa.createChapter = function () {
 };
 
 rgaa.scrollUpdate = function () {
-    rgaa.qsa('h2', function (el) {
+    rgaa.qsa('#rulesSection h2', function (el) {
         if (window.scrollY >= el.parentNode.offsetTop) {
             document.getElementById('currentChapter').innerHTML = el.innerHTML;
             document.getElementsByTagName('header')[0].className = el.getAttribute("data-color");
@@ -576,7 +631,7 @@ rgaa.createRules = function (chapter) {
         level = rule.level.substr(1, rule.level.length - 2);
         rgaa.nbRules[level]++;
         el.setAttribute('class', level);
-        el.innerHTML = '<td><input type="checkbox" checked="checked"></td><td>' + rule.id + '</td><td>' + rule.level + '</td><td id="' + rule.id + '" class="rule">' + rule.text + '</td><td class="rate"><span aria-hidden="true"></span><input class="axs_hidden" type="text" aria-labelledby="' + rule.id + '"></td></tr>';
+        el.innerHTML = '<td><input type="checkbox" checked="checked" aria-label="règle ' + rule.id + '"></td><td id="id' + rule.id + '"><span class="axs_hidden">règle </span>' + rule.id + '</td><td>' + rule.level + '</td><td id="' + rule.id + '" class="rule"><span class="axs_hidden">' + rule.id + " </span>" + rule.text + '</td><td class="rate"><span aria-hidden="true"></span><input class="axs_hidden" type="text" aria-labelledby="id' + rule.id + '"></td></tr>';
         tbody.appendChild(el);
     });
 

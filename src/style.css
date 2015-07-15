@@ -20,20 +20,16 @@ section {
     display: none;
 }
 
-section.rulesSection {
+section.display {
+    display: block;
+}
+
+#rulesSection {
   margin-top: -3.4em;
 }
 
-.displayRules .rulesSection {
-  display: block;
-}
-
-.displayExport .exportSection {
-  display: block;
-}
-
-.displayImport .importSection {
-  display: block;
+#rulesSection [type=checkbox]:focus {
+  outline: .1em solid #333;
 }
 
 #importErrorMessage {
@@ -241,7 +237,8 @@ footer button:active {
     margin-top: -3em;
 }
 
-footer button:hover {
+footer button:hover,
+footer button:focus {
     background: #fff;
     color: #333;
 }
@@ -360,12 +357,28 @@ tr.edit td.rate {
     background: #fff;
 }
 
+.checklistMode td.rate[data-completed=true] {
+  background: #f8fff8;
+}
+
+.checklistMode td.rate[data-completed=false] {
+  background: #fff8f8;
+}
+
 .checklistMode td.rate[data-completed=true]:before {
-    content: "OK";
+    content: "\2714";
+    color: #030;
+    font-size: .9em;
 }
 
 .checklistMode td.rate[data-completed=false]:before {
-    content: "KO";
+    content: "\2718";
+    font-size: .9em;
+    color: #a33;
+}
+
+.checklistMode tr[aria-disabled=true] td.rate {
+  background: #ddd;
 }
 
 tr[aria-disabled=true] {
@@ -498,28 +511,36 @@ footer a, footer a:active, footer a:visited, footer a:hover {
 }
 
 #projectName {
-    width: 80%;
-    font-weight: bold;
-    font-size: 1.4em;
-    border: 0;
-    margin: 1em 0 -1em .5em;
-    cursor: pointer;
-    display: none;
+  width: 80%;
+  font-weight: bold;
+  font-size: 1.4em;
+  border: 0;
+  margin: 1em 0 -1em .5em;
+  cursor: pointer;
 }
 
 #projectName:focus {
-    cursor: auto;
-}
-
-.displayRules #projectName {
-  display: inline;
+  cursor: auto;
 }
 
 #version {
-    float: left;
-    font-size: .5em;
-    font-weight: bold;
-    font-family: Arial;
-    margin: .5em;
-    margin-top: -2.5em;
+  float: left;
+  font-size: .5em;
+  font-weight: bold;
+  font-family: Arial;
+  margin: .5em;
+  margin-top: -2.5em;
+}
+
+#version a:hover, #version a:focus {
+  text-decoration: underline;
+}
+
+#elabel {
+  margin-left: 1.5em;
+  font-size: .7em;
+}
+
+#elabel a {
+  text-decoration: underline;
 }

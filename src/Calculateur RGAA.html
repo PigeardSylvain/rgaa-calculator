@@ -12,7 +12,7 @@
 
 	</head>
 
-	<body class="displayRules">
+	<body>
         <header>
 						<button id="btnMenu" aria-label="menu" aria-haspopup="true"></button>
 						<ul id="menu" role="menu" aria-expanded="false" aria-hidden="true">
@@ -22,29 +22,29 @@
 						</ul>
 
             <h1><a aria-label="Calcultaeur RGAA 3 - accéder aux scores" href="#footer">Calculateur RGAA 3</a></h1>
-            <div id="currentChapter"></div>
+            <div id="currentChapter" aria-hidden="true"></div>
 
             <span class="level">
                 <input type="radio" id="A" name="level" value="A" aria-label="niveau A">
-                <label title="RGAA niveau A" for="A" aria-label="niveau A">A</label>
-                <input type="radio" id="AA" name="level" value="AA" aria-label="niveau AA" checked="checked">
+                <label title="RGAA niveau A" for="A" aria-label="niveau simple A">A</label>
+                <input type="radio" id="AA" name="level" value="AA" aria-label="niveau double A" checked="checked">
                 <label title="RGAA niveau AA" for="AA" aria-label="niveau double A">AA</label>
-                <input type="radio" id="AAA" name="level" value="AAA" aria-label="niveau AAA">
+                <input type="radio" id="AAA" name="level" value="AAA" aria-label="niveau triple A">
                 <label title="RGAA niveau AAA" for="AAA" aria-label="niveau triple A">AAA</label>
             </span>
 
         </header>
         <input id="projectName" type="text" aria-label="nom du projet" value="Nom du projet XXX">
 
-        <section class="rulesSection"></section>
+        <section id="rulesSection" class="display"></section>
 
-				<section id="exportSection" class="exportSection">
+				<section id="exportSection">
 					<h2>Export JSON</h2>
 					<textarea id="exportArea"></textarea><br>
 					<button class="blackBtn" id="btnExportBack">Retour</button>
 				</section>
 
-				<section id="importSection" class="importSection">
+				<section id="importSection">
 					<h2>Import JSON</h2>
 					<textarea id="importArea"></textarea><br>
 					<div id="importErrorMessage"></div>
@@ -57,6 +57,7 @@
             <ul id="scoreList">
                     <!-- score list -->
             </ul>
+						<span id="elabel"></span>
             <div id="comment">
                 <h2><label for="commentArea">Commentaire</label></h2>
                 <textarea id="commentArea" placeholder="Insérer un commentaire"></textarea>
