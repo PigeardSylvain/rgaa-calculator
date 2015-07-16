@@ -9,6 +9,11 @@ Deux modes sont disponibles:
 - Le mode "pourcentage" qui permet de saisir un pourcentage de conformité pour chaque règle.
 
 # Nouveautés de la version 2
+Version 2.1:
+- Affichage de la description détaillée de la règle en cliquant sur son numéro (colonne id).
+- Amélioration de la navigation au clavier (gestion des flèches haut/bas, entrée, barre espace) dans la liste des règles en mode check-list.
+
+Version 2.0:
 - 2 modes au choix "check-list" ou "pourcentage"
 - Fonctionnalités d'import / export.
 - Bouton enregistrer-sous.
