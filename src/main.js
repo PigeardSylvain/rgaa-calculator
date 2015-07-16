@@ -56,7 +56,7 @@ rgaa.init = function () {
     // Init rule event
     rgaa.qsa("tbody td.rule", function (td) {
         td.addEventListener("click", function (e) {
-            var tr = e.target.parentNode, input;
+            var tr = td.parentNode, input;
             input = tr.querySelector("td:last-child input");
 
             if (document.body.classList.contains(rgaa.CS.percentmode)) {
@@ -93,6 +93,24 @@ rgaa.init = function () {
         });
     });
 
+    rgaa.qsa(".ruleId", function (el) {
+      el.addEventListener("click", function (e) {
+        this.parentNode.classList.toggle("displayDescription");
+      });
+
+      el.addEventListener("keydown", function (e) {
+        if (e.keyCode === 13 || e.keyCode === 32) {   // enter, space )
+          this.parentNode.classList.toggle("displayDescription");
+        }
+      });
+    });
+
+    rgaa.qsa(".ruleDescription", function (el) {
+        el.addEventListener("click", function (e) {
+          e.stopPropagation();
+        });
+    });
+
     // Init score
     ul = document.getElementById('scoreList');
     ul.innerHTML = "";
@@ -120,15 +138,27 @@ rgaa.init = function () {
             window.setTimeout(function () {
                 rgaa.setEditMode(e.target.parentNode.parentNode, false);
                 rgaa.rateCellHide(e.target.parentNode);
-            }, 100);
+            }, 0);
         });
         el.addEventListener("keydown", function (e) {
           if (document.body.classList.contains(rgaa.CS.checklistmode)) {
             if (e.keyCode == 9) { // TAB
               return true;
-            } else if (e.keyCode === 13 || e.keyCode === 32) {   // enter, space
+            } else if (e.keyCode === 32) {   // space
               el.parentNode.click();
               e.preventDefault();
+            } else if (e.keyCode === 13 || e.keyCode === 40) { // enter, down arrow
+              var tr = el.parentNode.parentNode;
+              tr = rgaa.nextTr(tr);
+              if (tr) {
+                tr.querySelector("[type=text]").focus();
+              }
+            } else if (e.keyCode === 38) { // up
+              var tr = el.parentNode.parentNode;
+              tr = rgaa.previousTr(tr);
+              if (tr) {
+                tr.querySelector("[type=text]").focus();
+              }
             } else if (e.keyCode === 27) { // escape
               el.value = "";
               rgaa.rateSave(el.parentNode);
@@ -386,11 +416,11 @@ rgaa.getLevelClasses = function (selector) {
   selector = selector || "";
 
   if (rgaa.currentLevel === "A") {
-      return "tr.A[aria-disabled=false]"+selector;
+      return "tr[data-level=A][aria-disabled=false]"+selector;
   } else if (rgaa.currentLevel === "AA") {
-      return "tr.A[aria-disabled=false]" + selector + ", tr.AA[aria-disabled=false]" + selector;
+      return "tr[data-level=A][aria-disabled=false]" + selector + ", tr[data-level=AA][aria-disabled=false]" + selector;
   } else {
-      return "tr.A[aria-disabled=false]" + selector + ", tr.AA[aria-disabled=false]" + selector + ", tr.AAA[aria-disabled=false]" + selector;
+      return "tr[data-level=A][aria-disabled=false]" + selector + ", tr[data-level=AA][aria-disabled=false]" + selector + ", tr[data-level=AAA][aria-disabled=false]" + selector;
   }
 
 };
@@ -639,8 +669,8 @@ rgaa.createRules = function (chapter) {
         el.setAttribute("aria-disabled", "false");
         level = rule.level.substr(1, rule.level.length - 2);
         rgaa.nbRules[level]++;
-        el.setAttribute('class', level);
-        el.innerHTML = '<td><input type="checkbox" checked="checked" aria-label="règle ' + rule.id + '"></td><td id="id' + rule.id + '"><span class="axs_hidden">règle </span>' + rule.id + '</td><td>' + rule.level + '</td><td id="' + rule.id + '" class="rule"><span class="axs_hidden">' + rule.id + " </span>" + rule.text + '</td><td class="rate"><span aria-hidden="true"></span><input class="axs_hidden" type="text" aria-labelledby="id' + rule.id + '"></td></tr>';
+        el.setAttribute('data-level', level);
+        el.innerHTML = '<td><input type="checkbox" checked="checked" aria-label="règle ' + rule.id + '"></td><td tabindex="0" class="ruleId" id="id' + rule.id + '"><span class="axs_hidden">règle </span>' + rule.id + '</td><td>' + rule.level + '</td><td id="' + rule.id + '" class="rule"><span class="axs_hidden">' + rule.id + " </span>" + rule.text + "<div class=\"ruleDescription\">" + rule.description + '</div></td><td class="rate"><span aria-hidden="true"></span><input class="axs_hidden" type="text" aria-labelledby="id' + rule.id + '"></td></tr>';
         tbody.appendChild(el);
     });
 
@@ -683,5 +713,49 @@ rgaa.download = function (filename, text) {
         pom.click();
     }
 }
+
+rgaa.nextTr = function (tr) {
+    var nextTr = tr.nextElementSibling;
+
+    if (!nextTr) {
+      var nextTable = tr.parentNode.parentNode.parentNode.nextElementSibling;
+      if (!nextTable) {
+        return false;
+      }
+      nextTr = nextTable.querySelector("tbody tr");
+    }
+
+    if (nextTr.getAttribute("data-level") && nextTr.getAttribute("data-level").length <= rgaa.currentLevel.length) {
+      return nextTr;
+    }
+
+    if (nextTr != tr) {
+      return rgaa.nextTr(nextTr);
+    }
+
+    return false;
+};
+
+rgaa.previousTr = function (tr) {
+    var previousTr = tr.previousElementSibling;
+
+    if (!previousTr) {
+      var previousTable = tr.parentNode.parentNode.parentNode.previousElementSibling;
+      if (!previousTable) {
+        return false;
+      }
+      previousTr = previousTable.querySelector("tbody tr:last-child");
+    }
+
+    if (previousTr.getAttribute("data-level") && previousTr.getAttribute("data-level").length <= rgaa.currentLevel.length) {
+      return previousTr;
+    }
+
+    if (previousTr != tr) {
+      return rgaa.previousTr(previousTr);
+    }
+
+    return false;
+};
 
 r(rgaa.start);
