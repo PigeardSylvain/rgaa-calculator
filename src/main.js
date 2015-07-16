@@ -29,7 +29,7 @@ rgaa.qsa = function (selector, callback) {
 };
 
 rgaa.init = function () {
-    var i = 0, ul;
+    var i = 0, ul, jsonToImport;
 
     rgaa.initHeader();
     rgaa.updateTitle();
@@ -168,6 +168,15 @@ rgaa.init = function () {
         }
     });
 
+    // Load values from previous save file (json object is attached at the end of file)
+    jsonToImport = document.getElementById("jsonToImport");
+    if (jsonToImport.innerHTML !=="") {
+      if (!rgaa.startImport(jsonToImport.innerHTML)) {
+        document.getElementById("btnImport").click();
+        document.getElementById("importArea").value = jsonToImport.innerHTML;
+      }
+      jsonToImport.innerHTML = "";
+    }
 };
 
 rgaa.initImportExport = function () {
@@ -182,41 +191,49 @@ rgaa.initImportExport = function () {
   })
 
   document.getElementById("btnStartImport").addEventListener("click", function (e) {
-      var importString = document.getElementById("importArea").value, jsonObj;
-
-      try {
-        jsonObj = JSON.parse(importString);
-      } catch (e) {
-        document.getElementById("importErrorMessage").innerHTML = e.message;
-        return true;
+      var importString = document.getElementById("importArea").value;
+      if (rgaa.startImport(importString)) {
+        rgaa.backToRules();
       }
-
-      rgaa.reset();
-      document.getElementById("projectName").value = jsonObj.name;
-      rgaa.setLevel(document.getElementById(jsonObj.level), true);
-      rgaa.setMode(jsonObj.mode);
-      document.getElementById("commentArea").value = jsonObj.comment;
-
-      jsonObj.rules.forEach(function (rule, i) {
-        var input, tr = document.getElementById(rule.id).parentNode;
-        input = tr.querySelector("td.rate input");
-        input.value = rule.value;
-        if (rule.value === "100") {
-          input.setAttribute("aria-checked", "true");
-        } else {
-          input.setAttribute("aria-checked", "false");
-        }
-
-        rgaa.rateCellHide(tr.querySelector("td.rate"));
-        if (rule.disabled) {
-            tr.querySelector("input[type=checkbox]").click();
-        }
-      });
-
-      rgaa.computeAllScore();
-      rgaa.backToRules();
   });
 
+};
+
+rgaa.startImport = function (importString) {
+  var jsonObj;
+
+  try {
+    jsonObj = JSON.parse(importString);
+  } catch (e) {
+    document.getElementById("importErrorMessage").innerHTML = e.message;
+    return false;
+  }
+
+  rgaa.reset();
+  document.getElementById("projectName").value = jsonObj.name;
+  rgaa.updateTitle();
+  rgaa.setLevel(document.getElementById(jsonObj.level), true);
+  rgaa.setMode(jsonObj.mode);
+  document.getElementById("commentArea").value = jsonObj.comment;
+
+  jsonObj.rules.forEach(function (rule, i) {
+    var input, tr = document.getElementById(rule.id).parentNode;
+    input = tr.querySelector("td.rate input");
+    input.value = rule.value;
+    if (rule.value === "100") {
+      input.setAttribute("aria-checked", "true");
+    } else {
+      input.setAttribute("aria-checked", "false");
+    }
+
+    rgaa.rateCellHide(tr.querySelector("td.rate"));
+    if (rule.disabled) {
+        tr.querySelector("input[type=checkbox]").click();
+    }
+  });
+
+  rgaa.computeAllScore();
+  return true;
 };
 
 rgaa.setMode = function (mode) {
@@ -482,23 +499,7 @@ rgaa.initMenu = function () {
     document.getElementById("exportSection").classList.add("display");
     window.location.href = window.location.href.split("#")[0] + "#exportSection";
 
-    var exportObj = {
-      name: document.getElementById("projectName").value,
-      level: rgaa.currentLevel,
-      mode: document.body.classList.contains(rgaa.CS.percentmode) ? rgaa.CS.percentmode : rgaa.CS.checklistmode,
-      comment: document.getElementById("commentArea").value,
-      rules: []
-    };
-
-    rgaa.qsa("#rulesSection tbody tr", function (tr) {
-      var rule = {};
-      rule.id = tr.querySelector(".rule").getAttribute("id");
-      rule.disabled = tr.getAttribute("aria-disabled") === "true" ? true : false;
-      rule.value = tr.querySelector("td.rate input").value;
-      exportObj.rules.push(rule);
-    });
-
-    document.getElementById("exportArea").value = JSON.stringify(exportObj);
+    document.getElementById("exportArea").value = JSON.stringify(rgaa.getJsonExport());
     rgaa.closeMenu();
   });
 
@@ -507,6 +508,14 @@ rgaa.initMenu = function () {
     document.getElementById("importSection").classList.add("display");
     window.location.href = window.location.href.split("#")[0] + "#importSection";
     rgaa.closeMenu();
+  });
+
+  document.getElementById("btnSaveAs").addEventListener("click", function (e) {
+    var jsonToImport = document.getElementById("jsonToImport");
+    rgaa.closeMenu();
+    jsonToImport.innerHTML = JSON.stringify(rgaa.getJsonExport());
+    rgaa.download(document.title + ".html", "<!DOCTYPE html><html lang=\"fr\">" + document.querySelector("html").innerHTML + "</html>");
+    jsonToImport.value = "";
   });
 
   // Trigger click event when enter key is pressed on menu items
@@ -582,7 +591,7 @@ rgaa.setLevel = function (el, noCompute) {
 };
 
 rgaa.createChapter = function () {
-    if (document.querySelector("section article")) {
+    if (document.querySelector("#rulesSection article")) {
         return true;
     }
     var color = 0, body = document.getElementsByTagName('section')[0];
@@ -638,5 +647,41 @@ rgaa.createRules = function (chapter) {
     table.appendChild(tbody);
     return table;
 };
+
+rgaa.getJsonExport = function () {
+  var exportObj = {
+    name: document.getElementById("projectName").value,
+    level: rgaa.currentLevel,
+    mode: document.body.classList.contains(rgaa.CS.percentmode) ? rgaa.CS.percentmode : rgaa.CS.checklistmode,
+    comment: document.getElementById("commentArea").value,
+    rules: []
+  };
+
+  rgaa.qsa("#rulesSection tbody tr", function (tr) {
+    var rule = {};
+    rule.id = tr.querySelector(".rule").getAttribute("id");
+    rule.disabled = tr.getAttribute("aria-disabled") === "true" ? true : false;
+    rule.value = tr.querySelector("td.rate input").value;
+    exportObj.rules.push(rule);
+  });
+
+  return exportObj;
+}
+
+rgaa.download = function (filename, text) {
+    var pom = document.createElement('a');
+
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+
+    if (document.createEvent) {
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, true);
+        pom.dispatchEvent(event);
+    }
+    else {
+        pom.click();
+    }
+}
 
 r(rgaa.start);

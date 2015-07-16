@@ -544,3 +544,7 @@ footer a, footer a:active, footer a:visited, footer a:hover {
 #elabel a {
   text-decoration: underline;
 }
+
+#jsonToImport {
+  display: none;
+}
