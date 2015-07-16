@@ -40,19 +40,19 @@ section article:first-child {
     padding-top: 3.5em;
 }
 
-section .A, section .AA, section .AAA {
+section [data-level=A], section [data-level=AA], section [data-level=AAA] {
     display: none;
 }
 
-section.A .A {
+section.A [data-level=A] {
     display: table-row;
 }
 
-section.AA .A, section.AA .AA {
+section.AA [data-level=A], section.AA [data-level=AA] {
     display: table-row;
 }
 
-section.AAA .A, section.AAA .AA, section.AAA .AAA {
+section.AAA [data-level=A], section.AAA [data-level=AA], section.AAA [data-level=AAA] {
     display: table-row;
 }
 
@@ -353,6 +353,12 @@ tr:hover {
     background: #f0f0f0;
 }
 
+td.ruleId:hover, td.ruleId:focus {
+    background: #fff;
+    font-weight: bold;
+    outline: none;
+}
+
 tr.edit td.rate {
     background: #fff;
 }
@@ -415,6 +421,22 @@ th.rate {
 td.rate {
     text-align: center;
     font-weight: bold;
+}
+
+td .ruleDescription {
+  display: none;
+}
+
+.displayDescription td .ruleDescription {
+  display: block;
+}
+
+.displayDescription .rule {
+  font-weight: bold;
+}
+
+.displayDescription .ruleDescription {
+  font-weight: normal;
 }
 
 .checklistMode td.rate span {
@@ -547,4 +569,8 @@ footer a, footer a:active, footer a:visited, footer a:hover {
 
 #jsonToImport {
   display: none;
+}
+
+.ruleDescription a {
+  text-decoration: underline;
 }
