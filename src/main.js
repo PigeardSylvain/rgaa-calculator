@@ -414,7 +414,7 @@ rgaa.computeLabel = function () {
 
     rgaa.qsa("td.rate input", function (el) {
       if (el.value === "100") {
-        rules[el.parentNode.parentNode.getAttribute("class")]++;
+        rules[el.parentNode.parentNode.getAttribute("data-level")]++;
       }
     })
 
