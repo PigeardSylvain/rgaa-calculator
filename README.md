@@ -12,6 +12,8 @@ Deux modes sont disponibles:
 Version 2.1:
 - Affichage de la description détaillée de la règle en cliquant sur son numéro (colonne id).
 - Amélioration de la navigation au clavier (gestion des flèches haut/bas, entrée, barre espace) dans la liste des règles en mode check-list.
+- Changements cosmétiques sur la liste des règles.
+- Ajout d'un champ de commentaire pour chaque chapitre accessible via l'icone qui précède le titre des chapitres.
 
 Version 2.0:
 - 2 modes au choix "check-list" ou "pourcentage"
@@ -47,13 +49,13 @@ Lorsque le score est suffisant un message est indiqué à l'utilisateur que la p
 
 # Pourquoi des pourcentages ?
 Comme me l'on fait remarquer [villainjp](https://twitter.com/villainjp)  et [goetsu](https://twitter.com/goetsu) sur twitter, la conformité avec un critère ne peut en théorie être que binaire (0 ou 100%). Cela dit, l'idée en utilisant des pourcentages est de pouvoir donner un état plus précis du travail restant à fournir au projet.
-Par exemple pour le premier critère : 
+Par exemple pour le premier critère :
 
-"Chaque image a-t-elle une alternative textuelle ?". 
+"Chaque image a-t-elle une alternative textuelle ?".
 
 * Si la page contient 50 images sans alternative, le test et KO.
-* Si la page contient 50 images, mais une seule ne possède pas d'alternative le résultat est le même, test KO. 
- 
+* Si la page contient 50 images, mais une seule ne possède pas d'alternative le résultat est le même, test KO.
+
 L'utilisation de pourcentage permet d'indiquer plus finement le travail restant à fournir. Même si cela reste plus ou moins subjectif (sauf en entrant dans des calculs mathématiques pour établir les pourcentages mais l'idée n'est pas là).
 **L'objectif est bien l'obtention d'un score de 100%.**
 

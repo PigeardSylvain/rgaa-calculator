@@ -53,6 +53,21 @@ rgaa.init = function () {
         });
     });
 
+    // Init comment button
+    rgaa.qsa("h2 .icon-chat", function (el) {
+      el.addEventListener("click", function (e) {
+        var chapterComment = this.parentNode.parentNode.querySelector(".chapterComment");
+        if (chapterComment.classList.contains("axs_hidden")) {
+          chapterComment.classList.remove("axs_hidden");
+          chapterComment.querySelector("textarea").focus();
+        } else {
+          chapterComment.classList.add("axs_hidden");
+        }
+      });
+    });
+
+    rgaa.initUpdateCommentIcons();
+
     // Init rule event
     rgaa.qsa("tbody td.rule", function (td) {
         td.addEventListener("click", function (e) {
@@ -95,7 +110,13 @@ rgaa.init = function () {
 
     rgaa.qsa(".ruleId", function (el) {
       el.addEventListener("click", function (e) {
-        this.parentNode.classList.toggle("displayDescription");
+        if (this.parentNode.classList.contains("displayDescription")) {
+          this.removeAttribute("aria-expanded");
+          this.parentNode.classList.remove("displayDescription");
+        } else {
+          this.setAttribute("aria-expanded", "true");
+          this.parentNode.classList.add("displayDescription");
+        }
       });
 
       el.addEventListener("keydown", function (e) {
@@ -118,7 +139,7 @@ rgaa.init = function () {
         var li = document.createElement("li");
 
         li.setAttribute("id", "score-chapter" + i);
-        li.innerHTML = el.innerHTML;
+        li.innerHTML = "<a href=\"#chapter" + i + "\">"+ el.querySelector("a:last-child").innerHTML + "</a>";
         li.children[0].setAttribute("href", "#chapter" + i);
 
         //li.appendChild(anchor);
@@ -198,6 +219,24 @@ rgaa.init = function () {
         }
     });
 
+    document.getElementById("commentPreview").addEventListener("click", function ()  {
+        this.parentNode.classList.add("edit");
+        document.getElementById("commentArea").focus();
+    });
+
+    document.getElementById("commentArea").addEventListener("input", function () {
+      document.getElementById("commentPreview").innerHTML = markdown.toHTML(this.value);
+    });
+
+    document.getElementById("commentArea").addEventListener("focus", function () {
+      this.parentNode.classList.add("edit");
+      document.getElementById("commentPreview").innerHTML = markdown.toHTML(this.value);
+    });
+
+    document.getElementById("commentArea").addEventListener("blur", function () {
+      this.parentNode.classList.remove("edit");
+    });
+
     // Load values from previous save file (json object is attached at the end of file)
     jsonToImport = document.getElementById("jsonToImport");
     if (jsonToImport.innerHTML !=="") {
@@ -207,6 +246,19 @@ rgaa.init = function () {
       }
       jsonToImport.innerHTML = "";
     }
+};
+
+rgaa.initUpdateCommentIcons = function () {
+  rgaa.qsa(".chapterComment textarea", function (el) {
+    var article = el.parentNode.parentNode;
+    el.addEventListener("blur", function (e) {
+      if (el.value) {
+        article.classList.add("hasComment");
+      } else {
+        article.classList.remove("hasComment");
+      }
+    })
+  });
 };
 
 rgaa.initImportExport = function () {
@@ -259,6 +311,23 @@ rgaa.startImport = function (importString) {
     rgaa.rateCellHide(tr.querySelector("td.rate"));
     if (rule.disabled) {
         tr.querySelector("input[type=checkbox]").click();
+    }
+  });
+
+  if (jsonObj.chapterComments) {
+    jsonObj.chapterComments.forEach(function (commentObj, i) {
+      var area = document.getElementById("commentChapter" + commentObj.id);
+      area.value = commentObj.comment;
+    })
+  }
+
+  rgaa.qsa(".chapterComment textarea", function (el) {
+    var article = el.parentNode.parentNode;
+    article.classList.remove("hasComment");
+    if (el.value) {
+      article.classList.add("hasComment");
+    } else {
+      article.classList.remove("hasComment");
     }
   });
 
@@ -318,6 +387,10 @@ rgaa.reset = function () {
         el.checked = true;
         el.setAttribute("checked", "");
         el.parentNode.parentNode.setAttribute("aria-disabled", "false");
+    });
+
+    rgaa.qsa(".chapterComment textarea", function (area) {
+      area.value = "";
     });
 
 };
@@ -403,7 +476,7 @@ rgaa.computeScore = function (article, isComputeAll) {
         headerScore.innerHTML = score;
     }
 
-    document.getElementById("score-" + span.parentNode.parentNode.parentNode.getAttribute("id")).children[0].children[0].innerHTML = score;
+    document.getElementById("score-" + span.parentNode.parentNode.parentNode.getAttribute("id")).querySelector("span").innerHTML = score;
 
     if (!isComputeAll) {
         rgaa.scrollUpdate();
@@ -630,7 +703,11 @@ rgaa.createChapter = function () {
     RGAA.chapters.forEach(function (chapter, i) {
         color = (color === 5) ? 1 : color + 1;
 
-        var a = document.createElement("a"), article = document.createElement("article"), el = document.createElement('h2');
+        var a = document.createElement("a"), article = document.createElement("article"), el = document.createElement('h2'), iconChat = document.createElement('button'), comment;
+
+        iconChat.setAttribute("title", "Afficher/masquer commentaire pour: " + chapter.title);
+        iconChat.setAttribute("class", "icon-chat");
+        el.appendChild(iconChat);
 
         article.classList.add("color" + color);
         article.setAttribute("id", "chapter" + i);
@@ -643,6 +720,11 @@ rgaa.createChapter = function () {
         el.appendChild(a);
         article.appendChild(el);
         article.appendChild(rgaa.createRules(chapter));
+
+        var comment = document.createElement("div");
+        comment.setAttribute("class", "axs_hidden chapterComment");
+        comment.innerHTML = "<h3>Commentaire pour: " + chapter.title.split(". ")[1] + "</h3><textarea id=\"commentChapter" + i + "\"></textarea>";
+        article.appendChild(comment);
 
         // insert rules
         body.appendChild(article);
@@ -661,7 +743,7 @@ rgaa.scrollUpdate = function () {
 rgaa.createRules = function (chapter) {
     // insert table
     var level, table = document.createElement('table'), tbody = document.createElement("tbody");
-    table.innerHTML = '<thead><tr><th class="active"><span class="axs_hidden">activation de la règle</span></th><th class="id">id</th><th class="level">niveau</th><th class="definition">définition</th><th class="rate">score<span class="axs_hidden" id="score-def"> (pourcentage de conformité avec la règle)</th></tr></theader>';
+    table.innerHTML = '<thead><tr><th class="active"><span class="axs_hidden">activation de la règle</span></th><th class="id">id<span class="axs_hidden" id="toggle_rule_desc">, activer pour afficher/reduire la description complète de la règle</span></th><th class="level">niveau</th><th class="definition">définition</th><th class="rate">score<span class="axs_hidden" id="score-def"> (pourcentage de conformité avec la règle)</th></tr></theader>';
 
     // insert chapter rules
     chapter.rules.forEach(function (rule, i) {
@@ -670,7 +752,7 @@ rgaa.createRules = function (chapter) {
         level = rule.level.substr(1, rule.level.length - 2);
         rgaa.nbRules[level]++;
         el.setAttribute('data-level', level);
-        el.innerHTML = '<td><input type="checkbox" checked="checked" aria-label="règle ' + rule.id + '"></td><td tabindex="0" class="ruleId" id="id' + rule.id + '"><span class="axs_hidden">règle </span>' + rule.id + '</td><td>' + rule.level + '</td><td id="' + rule.id + '" class="rule"><span class="axs_hidden">' + rule.id + " </span>" + rule.text + "<div class=\"ruleDescription\">" + rule.description + '</div></td><td class="rate"><span aria-hidden="true"></span><input class="axs_hidden" type="text" aria-labelledby="id' + rule.id + '"></td></tr>';
+        el.innerHTML = '<td><input type="checkbox" checked="checked" aria-label="règle ' + rule.id + '"></td><td tabindex="0" class="ruleId" id="id' + rule.id + '" role="button" aria-describedby="toggle_rule_desc"><span class="axs_hidden">règle </span>' + rule.id + '</td><td>' + rule.level + '</td><td id="' + rule.id + '" class="rule"><span class="axs_hidden">' + rule.id + " </span>" + rule.text + "<div class=\"ruleDescription\">" + rule.description + '</div></td><td class="rate"><span aria-hidden="true"></span><input class="axs_hidden" type="text" aria-labelledby="id' + rule.id + '"></td></tr>';
         tbody.appendChild(el);
     });
 
@@ -684,7 +766,8 @@ rgaa.getJsonExport = function () {
     level: rgaa.currentLevel,
     mode: document.body.classList.contains(rgaa.CS.percentmode) ? rgaa.CS.percentmode : rgaa.CS.checklistmode,
     comment: document.getElementById("commentArea").value,
-    rules: []
+    rules: [],
+    chapterComments: []
   };
 
   rgaa.qsa("#rulesSection tbody tr", function (tr) {
@@ -693,6 +776,16 @@ rgaa.getJsonExport = function () {
     rule.disabled = tr.getAttribute("aria-disabled") === "true" ? true : false;
     rule.value = tr.querySelector("td.rate input").value;
     exportObj.rules.push(rule);
+  });
+
+  rgaa.qsa(".chapterComment textarea", function (area) {
+    if (area.value) {
+      var commentObj = {};
+      commentObj.id = area.getAttribute("id").split("commentChapter")[1];
+      commentObj.type = "text";
+      commentObj.comment = area.value;
+      exportObj.chapterComments.push(commentObj);
+    }
   });
 
   return exportObj;
