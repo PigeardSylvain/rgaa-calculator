@@ -5,7 +5,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 body {
-	font-family: "Arial", sans-sherif;
+	 font-family: "Arial", sans-sherif;
     color: #000;
     background-color: #fff;
     margin: 2em 0 0 0;
@@ -167,6 +167,10 @@ header h1 {
   color: #000;
 }
 
+h2:first-child {
+    padding-top: 1.5em;
+}
+
 h2 {
     margin-left: .5em;
     padding: 0 0 0 .4em;
@@ -175,7 +179,8 @@ h2 {
     font-size: 1.4em;
     display: table-cell;
     vertical-align: bottom;
-    height: 3em;
+    height: 2em;
+    line-height: 1;
 }
 
 article h2 span {
@@ -242,16 +247,25 @@ footer button:focus {
     color: #333;
 }
 
-header .level [type=radio]:not([checked=checked])+label:hover {
+fieldset {
+  border: none;
+}
+
+[type=radio]+label {
+    background: #333;
+    color: #fff;
+}
+
+[type=radio]:not([checked=checked])+label:hover {
     background: #fff;
     color: #000;
 }
 
-header .level [type=radio]:focus+label{
+[type=radio]:focus+label{
     text-decoration: underline;
 }
 
-header [checked=checked]+label {
+[type=radio][checked=checked]+label {
     background: #fff;
     color: #000;
     border: .15em solid #fff;
@@ -375,8 +389,10 @@ td.ruleId:hover, td.ruleId:focus {
 td.ruleId:before {
   color: #444;
   content: "\25b6";
-  font-size: .5em;
+  font-size: .75em;
   margin-right: .2em;
+  display: inline-block;
+  width: 1em;
 }
 
 .displayDescription td.ruleId:before {
@@ -435,7 +451,7 @@ table .active {
 }
 
 table .id {
-    width: 3em;
+    width: 4.5em;
 }
 
 table .level {
@@ -519,10 +535,10 @@ footer li span {
     padding-right: .6em;
     float: left;
     width: 4em;
-    text-align: center;
+    text-align: left;
 }
 
-section textarea {
+textarea {
   font-family: "Arial", sans-sherif;
   height: 20em;
   width: 80%;
@@ -534,58 +550,44 @@ section textarea {
   padding: 1em;
 }
 
-#comment>div {
-  background: #fff;
-  width: 100%;
-  height: 20em;
-  padding: .5em;
-  margin-top: 1em;
+#comment {
+    background: #fff;
+    color: #333;
+    padding: 0 0 2em 1em;
 }
 
-#commentPreview, #commentArea {
-    font-family: "Arial", sans-sherif;
-    height: 100%;
-    width: 100%;
-    border: 0;
-    font-weight: bold;
-    padding: 1em;
-    overflow-y: auto;
+#comment textarea {
+  margin-left: 0;
 }
 
-#commentArea {
-  display: none;
-}
-.edit #commentArea, .edit #commentPreview {
-  float: left;
-  width: 50%;
-  display: block;
-}
-#commentPreview {
-  color: #444;
-  background: #fff;
+#comment fieldset {
+  margin: 1em 0 0 0;
+  padding: 0;
+  font-size: .7em;
 }
 
-.edit #commentPreview {
-  width: 50%;
+#comment fieldset legend {
+    margin-bottom: .5em;
+}
+
+#comment [type=radio]+label {
+  width: 7em;
+  display: inline-block;
+  text-align: center;
+  padding: .17em;
+  border: .17em solid #333;
+  background: #333;
+  color: #fff;
+  cursor: pointer;
+}
+
+#comment [type=radio]:not([checked="checked"])+label {
   background: #fff;
   color: #333;
-  border-left: .2em solid #333;
 }
 
-#commentPreview {
-  font-size: .75em
-}
-#commentPreview a, #commentPreview a:active, #commentPreview a:hover, #commentPreview a:visited, #commentPreview a:focus {
-  color: #4040ff;
-}
-#commentPreview a:focus, #commentPreview a:hover {
-  text-decoration: underline;
-}
-#commentPreview h1 {
-  font-size: 1.4em;
-}
-#commentPreview h2 {
-  font-size: 1em;
+#comment h2 {
+  padding-left: 0;
 }
 
 a, footer a:active, footer a:visited, footer a:hover {
@@ -654,23 +656,23 @@ footer a, footer a:active, footer a:visited, footer a:hover {
 article button.icon-chat {
   font-size: .7em;
   margin-right: .5em;
-  color: #fff;
-  Text-Shadow:
-    #000 .12em 0 0,
-    #000 .12em .12em 0,
-    #000 .12em -.12em 0,
-    #000 -.12em .12em 0,
-    #000 -.12em 0 0,
-    #000 -.12em -.12em 0,
-    #000 0 .12em 0,
-    #000 0 -.12em 0;
+  color: #000;
+  Text-Shadow: none;
 }
 
 article button.icon-chat:hover,
 article button.icon-chat:focus,
 article.hasComment button.icon-chat {
-  color: #000;
-  Text-Shadow: none;
+  color: #fff;
+  Text-Shadow:
+    #000 .1em 0 0,
+    #000 .1em .1em 0,
+    #000 .1em -.1em 0,
+    #000 -.1em .1em 0,
+    #000 -.1em 0 0,
+    #000 -.1em -.1em 0,
+    #000 0 .1em 0,
+    #000 0 -.1em 0;
   outline: none;
 }
 

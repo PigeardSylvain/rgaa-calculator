@@ -62,6 +62,7 @@ rgaa.init = function () {
           chapterComment.querySelector("textarea").focus();
         } else {
           chapterComment.classList.add("axs_hidden");
+          el.blur();
         }
       });
     });
@@ -219,11 +220,7 @@ rgaa.init = function () {
         }
     });
 
-    document.getElementById("commentPreview").addEventListener("click", function ()  {
-        this.parentNode.classList.add("edit");
-        document.getElementById("commentArea").focus();
-    });
-
+/*
     document.getElementById("commentArea").addEventListener("input", function () {
       document.getElementById("commentPreview").innerHTML = markdown.toHTML(this.value);
     });
@@ -236,7 +233,7 @@ rgaa.init = function () {
     document.getElementById("commentArea").addEventListener("blur", function () {
       this.parentNode.classList.remove("edit");
     });
-
+*/
     // Load values from previous save file (json object is attached at the end of file)
     jsonToImport = document.getElementById("jsonToImport");
     if (jsonToImport.innerHTML !=="") {
@@ -436,7 +433,7 @@ rgaa.computeLabel = function () {
       } else {
         document.querySelector("#elabel").innerHTML = '';
     }
-}
+};
 
 rgaa.computeScore = function (article, isComputeAll) {
     var span, classes, nbRules = 0, score = 0, headerScore, nbChecked = 0, nbTotalRules=0;
@@ -611,6 +608,11 @@ rgaa.initMenu = function () {
     document.getElementById("importSection").classList.add("display");
     window.location.href = window.location.href.split("#")[0] + "#importSection";
     rgaa.closeMenu();
+  });
+
+  document.getElementById("btnReport").addEventListener("click", function (e) {
+      rgaa.generateReport();
+      rgaa.closeMenu();
   });
 
   document.getElementById("btnSaveAs").addEventListener("click", function (e) {
@@ -789,7 +791,7 @@ rgaa.getJsonExport = function () {
   });
 
   return exportObj;
-}
+};
 
 rgaa.download = function (filename, text) {
     var pom = document.createElement('a');
@@ -805,7 +807,10 @@ rgaa.download = function (filename, text) {
     else {
         pom.click();
     }
-}
+};
+
+// Micro template function
+rgaa.tpl = function(a){return Function("v,o","o="+JSON.stringify(a).replace(/<%=(.+?)%>/g,'"+($1)+"').replace(/<%(.+?)%>/g,'";$1;o+="')+";return o")}
 
 rgaa.nextTr = function (tr) {
     var nextTr = tr.nextElementSibling;
@@ -851,4 +856,47 @@ rgaa.previousTr = function (tr) {
     return false;
 };
 
+rgaa.generateReport = function () {
+  var w = window.open(""), html="";
+
+  if (!rgaa.reportTpl) {
+    rgaa.reportTpl = rgaa.tpl(document.getElementById("reportTemplate").innerHTML);
+  }
+
+  html += "<h2>" + document.querySelector("footer h1").innerHTML + "</h2>";
+  html += "<div>" + document.getElementById("commentArea").value + "</div>";
+
+  rgaa.qsa("#rulesSection h2", function (el) {
+    html += rgaa.getSectionReport(el.parentNode);
+  });
+
+  w.document.write(rgaa.reportTpl({"title":"xxxx","body":html}));
+  w.document.close();
+};
+
+rgaa.getSectionReport = function (section) {
+  var html = "", errors, comment;
+
+  html += "<h2>" + section.querySelector("h2 a").innerHTML + "</h2>"
+
+  // Get not completed rules
+  errors = section.querySelectorAll(rgaa.getLevelClasses(' [data-completed=false]'));
+  if (errors.length > 0) {
+    html += "<h3>Erreur" + ((errors.length>1)?"s":"") + " :</h3>";
+    //html += "<table><tr><th>Id</th><th>Définition</th><tr>";
+    html += "<ul>";
+    Array.prototype.forEach.call(errors, function (td, i) {
+      html += "<li>" + td.parentNode.querySelector(".rule").innerHTML + "</li>";
+    });
+    html += "</ul>";
+    //html += "</table>";
+  }
+
+  comment = section.querySelector("textarea").value;
+  if (comment) {
+    html += "<h3>Commentaire :</h3><div>" + comment + "</div>";
+  }
+
+  return html;
+}
 r(rgaa.start);
