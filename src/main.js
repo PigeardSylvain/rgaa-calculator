@@ -390,6 +390,14 @@ rgaa.reset = function () {
       area.value = "";
     });
 
+    rgaa.qsa(".chapterComment", function (chapter) {
+      chapter.classList.add("axs_hidden");
+    });
+
+    rgaa.qsa(".hasComment", function (article) {
+      article.classList.remove("hasComment");
+    });
+
 };
 
 rgaa.updateTitle = function () {
@@ -857,27 +865,32 @@ rgaa.previousTr = function (tr) {
 };
 
 rgaa.generateReport = function () {
-  var w = window.open(""), html="";
+  var w = window.open(""), html="", header="";
 
   if (!rgaa.reportTpl) {
     rgaa.reportTpl = rgaa.tpl(document.getElementById("reportTemplate").innerHTML);
   }
 
-  html += "<h2>" + document.querySelector("footer h1").innerHTML + "</h2>";
-  html += "<div>" + document.getElementById("commentArea").value + "</div>";
+  header += "<h2>" + document.querySelector("footer h1").innerHTML + "</h2>";
+  header += "<div>" + document.getElementById("commentArea").value + "</div>";
 
   rgaa.qsa("#rulesSection h2", function (el) {
     html += rgaa.getSectionReport(el.parentNode);
   });
 
-  w.document.write(rgaa.reportTpl({"title":"xxxx","body":html}));
+  w.document.write(rgaa.reportTpl({"title":"xxxx","body":html, "header":header}));
   w.document.close();
+
+  Array.prototype.forEach.call(w.document.querySelectorAll(".ruleDescription"), function (el, i) {
+    el.parentNode.removeChild(el);
+  });
+  rgaa.download(w.document.title + ".html", "<!DOCTYPE html><html lang=\"fr\">" + w.document.querySelector("html").innerHTML + "</html>");
 };
 
 rgaa.getSectionReport = function (section) {
   var html = "", errors, comment;
 
-  html += "<h2>" + section.querySelector("h2 a").innerHTML + "</h2>"
+  html += "<section><h2>" + section.querySelector("h2 a").innerHTML + "</h2>"
 
   // Get not completed rules
   errors = section.querySelectorAll(rgaa.getLevelClasses(' [data-completed=false]'));
@@ -897,6 +910,6 @@ rgaa.getSectionReport = function (section) {
     html += "<h3>Commentaire :</h3><div>" + comment + "</div>";
   }
 
-  return html;
+  return html + "</section>";
 }
 r(rgaa.start);

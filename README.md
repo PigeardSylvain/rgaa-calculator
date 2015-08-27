@@ -11,9 +11,11 @@ Deux modes sont disponibles:
 # Nouveautés de la version 2
 Version 2.1:
 - Affichage de la description détaillée de la règle en cliquant sur son numéro (colonne id).
+- Ajout d'un champ de commentaire pour chaque chapitre accessible via l'icone qui précède le titre des chapitres.
+- Ajout d'un bouton "Générer le rapport" dans le menu, permettant de générer un rapport contenant la liste des règles en erreur ainsi que les commentaires. Rapports à styler soit même, 2 thèmes disponibles à titre d'exemple.
 - Amélioration de la navigation au clavier (gestion des flèches haut/bas, entrée, barre espace) dans la liste des règles en mode check-list.
 - Changements cosmétiques sur la liste des règles.
-- Ajout d'un champ de commentaire pour chaque chapitre accessible via l'icone qui précède le titre des chapitres.
+
 
 Version 2.0:
 - 2 modes au choix "check-list" ou "pourcentage"
