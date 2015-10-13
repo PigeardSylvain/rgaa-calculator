@@ -852,11 +852,16 @@ rgaa.previousTr = function (tr) {
 };
 
 rgaa.generateReport = function () {
-  var w = window.open(""), html="", header="";
+  var w = window.open(""), html="", header="", customStyle;
+
+  rgaa.reportWindow = w;
 
   if (!rgaa.reportTpl) {
     rgaa.reportTpl = rgaa.tpl(document.getElementById("reportTemplate").innerHTML);
   }
+
+  // minifier bypass
+  customStyle = "<li"; customStyle += "nk rel='stylesheet' href='report.css'" + ">"
 
   header += "<h2>" + document.querySelector("footer h1").innerHTML + "</h2>";
   header += "<div>" + document.getElementById("commentArea").value + "</div>";
@@ -865,14 +870,35 @@ rgaa.generateReport = function () {
     html += rgaa.getSectionReport(el.parentNode);
   });
 
-  w.document.write(rgaa.reportTpl({"title":"xxxx","body":html, "header":header}));
+  w.document.write(rgaa.reportTpl({"title":document.getElementById("projectName").value,"body":html, "header":header, "style":customStyle}));
   w.document.close();
 
   Array.prototype.forEach.call(w.document.querySelectorAll(".ruleDescription"), function (el, i) {
     el.parentNode.removeChild(el);
   });
-  rgaa.download(w.document.title + ".html", "<!DOCTYPE html><html lang=\"fr\">" + w.document.querySelector("html").innerHTML + "</html>");
+
+  // execute when report is ready
+  var r = function (f) {/in/.test(w.document.readyState) ? setTimeout('r(' + f + ')', 9) : f(); };
+  r(rgaa.reportLoaded);
 };
+
+rgaa.reportLoaded = function () {
+  var w = rgaa.reportWindow;
+
+  try {
+    // throw error if custom stylesheet is not found
+    w.document.styleSheets[1].cssRules;
+
+    // if no error, remove default style
+    var sheet = w.document.getElementsByTagName('style')[0];
+    sheet.parentNode.removeChild(sheet);
+  }
+  catch (err) {
+    // if custom styleSheet not provide, catch error ...and do nothing
+  }
+
+  rgaa.download(w.document.title + ".html", "<!DOCTYPE html><html lang=\"fr\">" + w.document.querySelector("html").innerHTML + "</html>");
+}
 
 rgaa.getSectionReport = function (section) {
   var html = "", errors, comment;
@@ -883,13 +909,11 @@ rgaa.getSectionReport = function (section) {
   errors = section.querySelectorAll(rgaa.getLevelClasses(' [data-completed=false]'));
   if (errors.length > 0) {
     html += "<h3>Erreur" + ((errors.length>1)?"s":"") + " :</h3>";
-    //html += "<table><tr><th>Id</th><th>Définition</th><tr>";
     html += "<ul>";
     Array.prototype.forEach.call(errors, function (td, i) {
       html += "<li>" + td.parentNode.querySelector(".rule").innerHTML + "</li>";
     });
     html += "</ul>";
-    //html += "</table>";
   }
 
   comment = section.querySelector("textarea").value;

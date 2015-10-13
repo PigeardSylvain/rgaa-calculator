@@ -11,8 +11,8 @@ Deux modes sont disponibles:
 # Nouveautés de la version 2
 Version 2.1:
 - Affichage de la description détaillée de la règle en cliquant sur son numéro (colonne id).
-- Ajout d'un champ de commentaire pour chaque chapitre accessible via l'icone qui précède le titre des chapitres.
-- Ajout d'un bouton "Générer le rapport" dans le menu, permettant de générer un rapport contenant la liste des règles en erreur ainsi que les commentaires. Rapports à styler soit-même, 2 thèmes disponibles à titre d'exemple.
+- Ajout d'un champ de commentaire (HTML accepté) pour chaque chapitre accessible via l'icone qui précède le titre des chapitres.
+- Ajout d'un bouton "Générer le rapport" dans le menu, permettant de générer un rapport contenant la liste des règles en erreur ainsi que les commentaires. Possiblité de styler le rapport en ajoutant un fichier report.css au même endroit que le calculateur.
 - Amélioration de la navigation au clavier (gestion des flèches haut/bas, entrée, barre espace) dans la liste des règles en mode check-list.
 - Changements cosmétiques sur la liste des règles.
 
@@ -34,10 +34,11 @@ Version 2.0:
 A noter que le calculateur peut être utilisé à l'aide du clavier (touches classiques).
 
 A tous moments:
- - Vous pouvez changer de mode (passer du mode pourcentage au mode check-list)
- - Enregistrer la page en cours de travail soit à partir du menu, soit depuis votre navigateur (fichier -> enregistrer) pour continuer plus tard.
+ - Vous pouvez changer de mode (passer du mode pourcentage au mode check-list).
+ - Enregistrer la page en cours de travail soit à partir du menu.
+ - Générer le rapport à partir du menu, les résultats et les commentaires sont exportés.
 
-Vous pouvez également saisir un commentaire libre dans le champ situé en bas de page.
+Vous pouvez également saisir un commentaire libre (HTML accepté) pour chaque thème et un commentaire général dans le champ situé en bas de page.
 
 Le bouton reset comme son nom l'indique permet de réinitialiser toutes les modifications apportées.
 
@@ -46,12 +47,9 @@ Le bouton reset comme son nom l'indique permet de réinitialiser toutes les modi
 # Génération d'un rapport
 Il est possible de générer un rapport depuis le menu : "Générer le rapport". Le rapport est généré dans un nouvel onglet et son téléchargement est automatiquement proposé. Celui-ci contient les règles en erreurs ainsi que les commentaires (code HTML autorisé dans les commentaires).
 
-Ce rapport est volontairement brut (non stylé). Par défaut le rapport essaie de charger une feuille de style report.css situé au même endroit que le calculateur.
-Vous pouver créer vos propres thèmes ou utiliser un thème fournit à titre d'exemple:
-- thème par défaut, télécharger la feuille de style: report.css
-- thème simple, télécharger la feuille de style: report.css
+Ce rapport est stylé par défaut mais vous pouvez si vous le souhaitez utiliser votre propre style. A la génération du rapport si une feuille de style report.css située au même endroit que le calculateur est trouvée aucun style ne sera ajouté dans le rapport.
 
-Ce fichier css est à placer au même endroit que votre calculateur si vous souhaitez qu'il soit chargé lorsque vous cliquez sur "Générer le rapport". Celui-ci doit être également présent à l'endroit ou vous enregistrez vos rapports.
+A noter qu'il faut également que ce fichier report.css soit présent à l'endroit ou vous enregistrer vos rapport pour que le style soit chargé lors de la consultation du rapport.
 
 # Import / export
 La version 2 introduit des fonctionnalités d'import/export au format JSON (disponible à partir du menu principal).
