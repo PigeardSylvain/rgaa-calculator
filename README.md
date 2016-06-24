@@ -2,7 +2,7 @@
 
 Le calculateur RGAA permet de calculer la conformité d'une page avec les règles RGAA 3.
 
-Vous pouvez accéder au calculateur directement depuis cette page: [Calculateur RGAA.html](http://sylvainbzh.github.io/Calculateur%20RGAA.html)
+Vous pouvez accéder au calculateur directement depuis cette page: [Calculateur RGAA.html](http://pigeardsylvain.github.io/rgaa-calculator/dist/Calculateur%20RGAA.html)
 
 Deux modes sont disponibles:
 - Le mode "check-list" qui permet de marquer chaque règle comme valide ou invalide.

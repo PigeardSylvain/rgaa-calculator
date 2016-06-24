@@ -749,7 +749,7 @@ rgaa.createRules = function (chapter) {
         level = rule.level.substr(1, rule.level.length - 2);
         rgaa.nbRules[level]++;
         el.setAttribute('data-level', level);
-        el.innerHTML = '<td><input type="checkbox" checked="checked" aria-label="règle ' + rule.id + '"></td><td tabindex="0" class="ruleId" id="id' + rule.id + '" role="button" aria-describedby="toggle_rule_desc"><span class="axs_hidden">règle </span>' + rule.id + '</td><td>' + rule.level + '</td><td id="' + rule.id + '" class="rule"><span class="axs_hidden">' + rule.id + " </span><span id=\"ruleLabel" + rule.id + "\" class=\"ruleLabel\">" + rule.text + "</span><div class=\"ruleDescription\">" + rule.description + '</div></td><td class="rate"><span aria-hidden="true"></span><input class="axs_hidden" type="text" aria-labelledby="ruleLabel' + rule.id + '"></td></tr>';
+        el.innerHTML = '<td><input type="checkbox" checked="checked" aria-label="règle ' + rule.id + '"></td><td tabindex="0" class="ruleId" id="id' + rule.id + '" role="button" aria-describedby="toggle_rule_desc"><span class="axs_hidden">règle </span>' + rule.id + '</td><td>' + rule.level + '</td><td id="' + rule.id + '" class="rule"><span class="axs_hidden">' + rule.id + " </span><span id=\"ruleLabel" + rule.id + "\" class=\"ruleLabel\">" + rule.text + "</span><div class=\"ruleDescription\"><ul>" + rule.description + '</ul></div></td><td class="rate"><span aria-hidden="true"></span><input class="axs_hidden" type="text" aria-labelledby="ruleLabel' + rule.id + '"></td></tr>';
         tbody.appendChild(el);
     });
 
