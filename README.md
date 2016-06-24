@@ -9,6 +9,10 @@ Deux modes sont disponibles:
 - Le mode "pourcentage" qui permet de saisir un pourcentage de conformité pour chaque règle.
 
 # Nouveautés de la version 2
+
+Version 2.2:
+- Mise à jour suite à la nouvelle version des RGAA 3 (version 2016)
+
 Version 2.1:
 - Affichage de la description détaillée de la règle en cliquant sur son numéro (colonne id).
 - Ajout d'un champ de commentaire (HTML accepté) pour chaque chapitre accessible via l'icone qui précède le titre des chapitres.
