@@ -104,7 +104,7 @@ rgaa.init = function () {
     rgaa.qsa("tbody td.rate", function (td) {
         td.addEventListener("click", function (e) {
           if (document.body.classList.contains(rgaa.CS.checklistmode)) {
-            td.previousElementSibling.click();
+            td.previousElementSibling.previousElementSibling.click();
           }
         });
     });
@@ -149,67 +149,77 @@ rgaa.init = function () {
     });
 
     // Init input event
-    rgaa.qsa("article input[type=text]", function (el) {
+    rgaa.qsa("article .comment input[type=text]", function (el) {
         el.addEventListener("focus", function (e) {
-          if (document.body.classList.contains(rgaa.CS.percentmode)) {
-            rgaa.rateCellDisplay(el.parentNode);
-          }
           rgaa.setEditMode(el.parentNode.parentNode, true);
         });
         el.addEventListener("blur", function (e) {
-            window.setTimeout(function () {
-                rgaa.setEditMode(e.target.parentNode.parentNode, false);
-                rgaa.rateCellHide(e.target.parentNode);
-            }, 0);
+          rgaa.setEditMode(el.parentNode.parentNode, false);
         });
         el.addEventListener("keydown", function (e) {
-          if (document.body.classList.contains(rgaa.CS.checklistmode)) {
+          if (e.keyCode === 13 || e.keyCode === 40) { // enter, down arrow
+            var tr = el.parentNode.parentNode;
+            tr = rgaa.nextTr(tr);
+            if (tr) {
+              tr.querySelector(".comment [type=text]").focus();
+            }
+          } else if (e.keyCode === 38) { // up
+            var tr = el.parentNode.parentNode;
+            tr = rgaa.previousTr(tr);
+            if (tr) {
+              tr.querySelector(".comment [type=text]").focus();
+            }
+          }
+        });
+    });
+
+    rgaa.qsa("article .rate input[type=text]", function (el) {
+        el.addEventListener("focus", function (e) {
+          el.parentNode.classList.add("focus");          
+          rgaa.setEditMode(el.parentNode.parentNode, true);
+        });
+        el.addEventListener("blur", function (e) {
+            el.parentNode.classList.remove("focus");            
+            rgaa.setEditMode(e.target.parentNode.parentNode, false);
+            rgaa.rateSave(el.parentNode);
+        });
+        
+        el.addEventListener("keydown", function (e) {          
+
             if (e.keyCode == 9) { // TAB
               return true;
-            } else if (e.keyCode === 32) {   // space
+            } else if (e.keyCode === 32) {   // space             
               el.parentNode.click();
               e.preventDefault();
             } else if (e.keyCode === 13 || e.keyCode === 40) { // enter, down arrow
               var tr = el.parentNode.parentNode;
               tr = rgaa.nextTr(tr);
               if (tr) {
-                tr.querySelector("[type=text]").focus();
+                tr.querySelector(".rate [type=text]").focus();
               }
             } else if (e.keyCode === 38) { // up
               var tr = el.parentNode.parentNode;
               tr = rgaa.previousTr(tr);
               if (tr) {
-                tr.querySelector("[type=text]").focus();
+                tr.querySelector(".rate [type=text]").focus();
               }
             } else if (e.keyCode === 27) { // escape
               el.value = "";
               rgaa.rateSave(el.parentNode);
-            } else {
+            } 
+            
+            if (document.body.classList.contains(rgaa.CS.checklistmode)) {
               e.preventDefault();
-            }
-          } else {
-            if (e.keyCode === 13) {
-                el.blur();
-            }
+            } else {
+              if (e.keyCode === 13) {
+                  el.blur();
+              }            
           }
         });
     });
 
     document.getElementById("projectName").addEventListener("keydown", function () {
         rgaa.updateTitle();
-    });
-
-    rgaa.qsa("td.rate", function (el) {
-        el.addEventListener("mouseenter", function (el) {
-          if (document.body.classList.contains(rgaa.CS.percentmode)) {
-            rgaa.rateCellDisplay(el.target);
-          }
-        });
-        el.addEventListener("mouseleave", function (el) {
-            if (!rgaa.editMode) {
-                rgaa.rateCellHide(el.target);
-            }
-        });
     });
 
     rgaa.computeAllScore();
@@ -289,8 +299,10 @@ rgaa.startImport = function (importString) {
       input.setAttribute("aria-checked", "true");
     } else {
       input.setAttribute("aria-checked", "false");
+    }    
+    if (rule.comment) {      
+      tr.querySelector("td.comment input").value = rule.comment;
     }
-
     rgaa.rateCellHide(tr.querySelector("td.rate"));
     if (rule.disabled) {
         tr.querySelector("input[type=checkbox]").click();
@@ -324,13 +336,13 @@ rgaa.setMode = function (mode) {
 
   if (mode === rgaa.CS.percentmode) {
     document.getElementById("btnChangeMode").innerHTML = rgaa.CS.modechecklist;
-    rgaa.qsa("#rulesSection input", function (el) {
+    rgaa.qsa("#rulesSection .rate input", function (el) {
       el.removeAttribute("role");
       el.removeAttribute("aria-checked");
     });
   } else {
     document.getElementById("btnChangeMode").innerHTML = rgaa.CS.modepourcent;
-    rgaa.qsa("#rulesSection input", function (el) {
+    rgaa.qsa("#rulesSection .rate input", function (el) {
       el.setAttribute("role", "checkbox");
       if (el.value === "100") {
         el.setAttribute("aria-checked", "true");
@@ -349,9 +361,13 @@ rgaa.backToRules = function () {
 };
 
 rgaa.reset = function () {
-    rgaa.qsa("article input[type=text]", function (el) {
+    rgaa.qsa("article .rate input[type=text]", function (el) {
         el.value = "";
         el.removeAttribute("aria-checked");
+    });
+
+    rgaa.qsa("article .comment input[type=text]", function (el) {
+        el.value = "";
     });
 
     rgaa.qsa("article td.rate", function (el) {
@@ -485,6 +501,19 @@ rgaa.getLevelClasses = function (selector) {
       return "tr[data-level=A][aria-disabled=false]" + selector + ", tr[data-level=AA][aria-disabled=false]" + selector;
   } else {
       return "tr[data-level=A][aria-disabled=false]" + selector + ", tr[data-level=AA][aria-disabled=false]" + selector + ", tr[data-level=AAA][aria-disabled=false]" + selector;
+  }
+
+};
+
+rgaa.getAllLevelClasses = function (selector) {
+  selector = selector || "";
+
+  if (rgaa.currentLevel === "A") {
+      return "tr[data-level=A]"+selector;
+  } else if (rgaa.currentLevel === "AA") {
+      return "tr[data-level=A]" + selector + ", tr[data-level=AA]" + selector;
+  } else {
+      return "tr[data-level=A]" + selector + ", tr[data-level=AA]" + selector + ", tr[data-level=AAA]" + selector;
   }
 
 };
@@ -740,7 +769,7 @@ rgaa.scrollUpdate = function () {
 rgaa.createRules = function (chapter) {
     // insert table
     var level, table = document.createElement('table'), tbody = document.createElement("tbody");
-    table.innerHTML = '<thead><tr><th class="active"><span class="axs_hidden">activation de la règle</span></th><th class="id">id<span class="axs_hidden" id="toggle_rule_desc">, activer pour afficher/reduire la description complète de la règle</span></th><th class="level">niveau</th><th class="definition">définition</th><th class="rate">score<span class="axs_hidden" id="score-def"> (pourcentage de conformité avec la règle)</th></tr></theader>';
+    table.innerHTML = '<thead><tr><th class="active"><span class="axs_hidden">activation de la règle</span></th><th class="id">id<span class="axs_hidden" id="toggle_rule_desc">, activer pour afficher/reduire la description complète de la règle</span></th><th class="level">niveau</th><th class="definition">définition</th><th class="comment">commentaire</th><th class="rate">score<span class="axs_hidden" id="score-def"> (pourcentage de conformité avec la règle)</th></tr></theader>';
 
     // insert chapter rules
     chapter.rules.forEach(function (rule, i) {
@@ -749,7 +778,7 @@ rgaa.createRules = function (chapter) {
         level = rule.level.substr(1, rule.level.length - 2);
         rgaa.nbRules[level]++;
         el.setAttribute('data-level', level);
-        el.innerHTML = '<td><input type="checkbox" checked="checked" aria-label="règle ' + rule.id + '"></td><td tabindex="0" class="ruleId" id="id' + rule.id + '" role="button" aria-describedby="toggle_rule_desc"><span class="axs_hidden">règle </span>' + rule.id + '</td><td>' + rule.level + '</td><td id="' + rule.id + '" class="rule"><span class="axs_hidden">' + rule.id + " </span><span id=\"ruleLabel" + rule.id + "\" class=\"ruleLabel\">" + rule.text + "</span><div class=\"ruleDescription\"><ul>" + rule.description + '</ul></div></td><td class="rate"><span aria-hidden="true"></span><input class="axs_hidden" type="text" aria-labelledby="ruleLabel' + rule.id + '"></td></tr>';
+        el.innerHTML = '<td><input type="checkbox" checked="checked" aria-label="règle ' + rule.id + '"></td><td tabindex="0" class="ruleId" id="id' + rule.id + '" role="button" aria-describedby="toggle_rule_desc"><span class="axs_hidden">règle </span>' + rule.id + '</td><td>' + rule.level + '</td><td id="' + rule.id + '" class="rule"><span class="axs_hidden">' + rule.id + " </span><span id=\"ruleLabel" + rule.id + "\" class=\"ruleLabel\">" + rule.text + "</span><div class=\"ruleDescription\"><ul>" + rule.description + '</ul></div></td><td class="comment"><input aria-label="commentaire ' + rule.id + '" type="text" id="comment' + rule.id + '"></td><td class="rate"><span class="hide"></span><input type="text" aria-labelledby="ruleLabel' + rule.id + '"></td></tr>';
         tbody.appendChild(el);
     });
 
@@ -772,6 +801,10 @@ rgaa.getJsonExport = function () {
     rule.id = tr.querySelector(".rule").getAttribute("id");
     rule.disabled = tr.getAttribute("aria-disabled") === "true" ? true : false;
     rule.value = tr.querySelector("td.rate input").value;
+    var comment = tr.querySelector("td.comment input").value;
+    if (comment) {
+      rule.comment = comment;
+    }
     exportObj.rules.push(rule);
   });
 
@@ -853,18 +886,20 @@ rgaa.previousTr = function (tr) {
 
 rgaa.generateReport = function () {
   var w = window.open(""), html="", header="", customStyle;
-
   rgaa.reportWindow = w;
 
   if (!rgaa.reportTpl) {
     rgaa.reportTpl = rgaa.tpl(document.getElementById("reportTemplate").innerHTML);
   }
 
-  // minifier bypass
+  // split string to bypass minifier
   customStyle = "<li"; customStyle += "nk rel='stylesheet' href='report.css'" + ">"
 
-  header += "<h2>" + document.querySelector("footer h1").innerHTML + "</h2>";
-  header += "<div>" + document.getElementById("commentArea").value + "</div>";
+  header += "<h2> RGAA 3 niveau " + rgaa.currentLevel + ", critères valides : " + document.querySelector("footer h1 span").innerHTML + "</h2>";
+  var globalComment = document.getElementById("commentArea").value;
+  if (globalComment) {
+    header += "<div>" + document.getElementById("commentArea").value + "</div>";
+  }
 
   rgaa.qsa("#rulesSection h2", function (el) {
     html += rgaa.getSectionReport(el.parentNode);
@@ -885,15 +920,15 @@ rgaa.generateReport = function () {
 rgaa.reportLoaded = function () {
   var w = rgaa.reportWindow;
 
-  try {
+  try {   
     // throw error if custom stylesheet is not found
-    w.document.styleSheets[1].cssRules;
-
-    // if no error, remove default style
-    var sheet = w.document.getElementsByTagName('style')[0];
-    sheet.parentNode.removeChild(sheet);
+    if (w.document.styleSheets[1].cssRules) {    
+      // if no error, remove default style
+      var sheet = w.document.getElementsByTagName('style')[0];
+      sheet.parentNode.removeChild(sheet);
+    }
   }
-  catch (err) {
+  catch (err) {    
     // if custom styleSheet not provide, catch error ...and do nothing
   }
 
@@ -901,21 +936,29 @@ rgaa.reportLoaded = function () {
 }
 
 rgaa.getSectionReport = function (section) {
-  var html = "", errors, comment;
+  var html = "", errors, comment, rules, isValid;
 
   html += "<section><h2>" + section.querySelector("h2 a").innerHTML + "</h2>"
 
-  // Get not completed rules
-  errors = section.querySelectorAll(rgaa.getLevelClasses(' [data-completed=false]'));
-  if (errors.length > 0) {
-    html += "<h3>Erreur" + ((errors.length>1)?"s":"") + " :</h3>";
-    html += "<ul>";
-    Array.prototype.forEach.call(errors, function (td, i) {
-      html += "<li>" + td.parentNode.querySelector(".rule").innerHTML + "</li>";
-    });
-    html += "</ul>";
-  }
+  rules = section.querySelectorAll(rgaa.getAllLevelClasses());
+  html+="<table><tr><th>Id</th><th>Niveau</th><th id=\"rule\">Règle</th><th>Applicable</th><th>Conforme</th></tr>";
+  
+  Array.prototype.forEach.call(rules, function (tr, i) {
+    var comment = tr.querySelector("td.comment input").value;        
+    if (document.body.classList.contains(rgaa.CS.percentmode)) {
+      isValid = tr.querySelector("td.rate input").value + "%";
+    } else {
+      isValid = tr.querySelector("td.rate").getAttribute("data-completed") == "true"?"Oui":"Non";
+    }
 
+    html+="<tr tabindex=\"0\"><td" + (comment?" rowspan=\"2\"":"") + ">" + tr.querySelector("td.rule").id + "</td><td" + (comment?" rowspan=\"2\"":"") + ">" + tr.getAttribute("data-level") + "</td><td class=\"left\">" + tr.querySelector("td .ruleLabel").innerHTML + "</td><td" + (comment?" rowspan=\"2\"":"") + ">" + ((tr.getAttribute("aria-disabled") === "true") ? "-":"Oui") + "</td><td" + (comment?" rowspan=\"2\"":"") + ">" + isValid + "</td></tr>";    
+    if (comment) {
+      html+="<tr><td class=\"left comment\">" + comment + "</td></tr>";
+    }    
+  });
+
+  html+="</table>";
+  
   comment = section.querySelector("textarea").value;
   if (comment) {
     html += "<h3>Commentaire :</h3><div>" + comment + "</div>";

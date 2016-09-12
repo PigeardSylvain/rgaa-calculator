@@ -10,6 +10,10 @@ Deux modes sont disponibles:
 
 # Nouveautés de la version 2
 
+Version 2.3:
+- Ajout d'un champ commentaire pour chaque règle, en plus du champ commentaire par chapitre et du commentaire global.
+- Mise à jour du rapport: plus détaillé, nouveau design.
+
 Version 2.2:
 - Mise à jour suite à la nouvelle version des RGAA 3 (version 2016)
 

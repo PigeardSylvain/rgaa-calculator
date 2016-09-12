@@ -2,33 +2,22 @@
   display: none;
 }
 
+/* Box sizing */
 html {
   box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
 }
 
 body {
   font-family: "Arial", sans-sherif;
   color: #333;
-  background-color: #DAD3CE;
+  background-color: #fff;
   margin: 0;
 }
 
-header h2, header div {
-    margin: 1em;
-}
-
-header {
-    padding-bottom: 3em;
-}
-
-header div {
-    border: solid .2em #000;
-    padding: 1em;
-    background: #f0f0f0;
-}
-
 header div:before {
-  content: "Appréciation globale :";
   display: block;
   margin-bottom: 1em;
   font-weight: bold;
@@ -39,12 +28,8 @@ section {
 }
 
 section h2 {
-  border-top: .2em dotted #000;
+  border: none;
   padding-top: 1em;
-}
-
-section div:last-child, section ul:last-child {
-  margin-bottom: 2em;
 }
 
 h1 {
@@ -55,26 +40,61 @@ h1 {
   margin: 0;
 }
 
-h1:before {
-    content: "Rapport d'accessiblité : ";
+header div,
+h3+div {
+  padding: .6em;  
+  border: 0.1em solid #ddd;
+  background: #f0f0f0;
+  width: 80%;
+  font-size: 85%;
 }
 
-h3:has(> ul) {
-  color: #f00;
+table {
+  border-collapse: collapse;
+  width: 80%;
+}
+
+th, td {  
+  padding: .6em;
+  font-size: 85%;
+  text-align: center;
+}
+
+td, th {
+  border: .1em solid #ddd;
+}
+
+td.comment {
+  background-color: #fafafa;
+}
+
+tr:focus {
+  outline: .15em solid #000;
+}
+
+th {  
+  font-weight: bold;
+  background-color: #f0f0f0;
+}
+
+#rule {
+  width: 80%;
+}
+
+.left {
+  text-align: left;
 }
 
 ul {
-  padding: 1em;
-  margin: 0 1em 0 1em;
-  border: 0.2em solid #000;
-  list-style: none;
-  color: #fff;
-  background: #98363F;
+  margin: .5em 0;
 }
 
-h3+div {
-  padding: 1em;
-  margin: 0 1em 0 1em;
-  border: 0.2em solid #000;
-  background: #f0f0f0;
+footer {
+  width: 100;  
+}
+
+footer a {
+  color: #777;
+  font-size: 75%;
+  margin: 1em;
 }

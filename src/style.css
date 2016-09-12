@@ -5,7 +5,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 body {
-	 font-family: "Arial", sans-sherif;
+    font-family: "Arial", sans-sherif;
     color: #000;
     background-color: #fff;
     margin: 2em 0 0 0;
@@ -376,10 +376,46 @@ header.color5 {
     border-bottom: .2em solid #FFDB00;
 }
 
+tr, td.comment, td.rate {
+    height: 100%;
+}
+
 tr:hover {
     background: #f0f0f0;
 }
 
+td.comment, td.rate {
+    padding: 0;         
+}
+
+td.comment input,
+td.rate input {
+    height: 100%;
+    border: 0;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+td.comment input:hover,
+td.comment input:focus,
+td.rate input:hover,
+td.rate input:focus {
+    background-color: rgba(255, 255, 255, .5);    
+}
+
+.checklistMode td.rate input {
+    position: absolute !important;
+    clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+    padding:0 !important;
+    border:0 !important;
+    height: 1px !important;
+    width: 1px !important;
+    overflow: hidden;
+}
+
+td.rate span {
+    display: none !important;
+}
 td.ruleId:hover, td.ruleId:focus {
     background: #fff;
     font-weight: bold;
@@ -458,6 +494,10 @@ table .level {
     width: 4em;
 }
 
+th.comment {
+   width: 8em; 
+}
+
 th.rate {
     width: 8em;
 }
@@ -488,13 +528,30 @@ td .ruleDescription {
     display: none;
 }
 
+tr.edit td.rate.focus {
+    background-color: rgba(255, 255, 255, .5);
+}
+
+td.rate input,
+td.rate span,
+td.rate::before {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 2em;
+}
+
 td.rate input {
-    width: 100%;
+    width: 3em;
     margin: 0;
     padding: 0;
     border: 0;
     font-weight: bold;
     text-align: center;
+    font-size: 1em;
+}
+
+.percentMode td.rate:after {    
+    content: '%';
 }
 
 article {
