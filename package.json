@@ -1,7 +1,7 @@
 {
   "name": "calculateur-rgaa",
   "version": "1.0.0",
-  "description": "permet de calculer le pourcentage de conformité d'une page aux règles RGAA",
+  "description": "permet de calculer la conformité d'une page aux règles RGAA",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

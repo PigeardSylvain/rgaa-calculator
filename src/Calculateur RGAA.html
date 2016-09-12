@@ -15,14 +15,14 @@
 
 	<body>
         <header>
-						<button id="btnMenu" aria-label="menu" aria-haspopup="true"></button>
-						<ul id="menu" role="menu" aria-expanded="false" aria-hidden="true">
-							<li role="menuitem" tabindex="0" id="btnChangeMode"></li>
-							<li role="menuitem" tabindex="0" id="btnReport">Générer le rapport</li>
-							<li role="menuitem" tabindex="0" id="btnSaveAs">Enregistrer sous</li>
-							<li role="menuitem" tabindex="0" id="btnImport">Importer</li>
-							<li role="menuitem" tabindex="0" id="btnExport">Exporter</li>
-						</ul>
+			<button id="btnMenu" aria-label="menu" aria-haspopup="true"></button>
+			<ul id="menu" role="menu" aria-expanded="false" aria-hidden="true">
+				<li role="menuitem" tabindex="0" id="btnChangeMode"></li>
+				<li role="menuitem" tabindex="0" id="btnReport">Générer le rapport</li>
+				<li role="menuitem" tabindex="0" id="btnSaveAs">Enregistrer sous</li>
+				<li role="menuitem" tabindex="0" id="btnImport">Importer</li>
+				<li role="menuitem" tabindex="0" id="btnExport">Exporter</li>
+			</ul>
 
             <h1><a aria-label="Calcultaeur RGAA 3 - accéder aux scores" href="#footer">Calculateur RGAA 3</a></h1>
             <div id="currentChapter" aria-hidden="true"></div>
@@ -39,56 +39,63 @@
         </header>
         <input id="projectName" type="text" aria-label="nom du projet" value="Nom du projet XXX">
         <section id="rulesSection" class="display"></section>
-				<section id="exportSection">
-					<h2>Export JSON</h2>
-					<textarea id="exportArea"></textarea><br>
-					<button class="blackBtn" id="btnExportBack">Retour</button>
-				</section>
 
-				<section id="importSection">
-					<h2>Import JSON</h2>
-					<textarea id="importArea"></textarea><br>
-					<div id="importErrorMessage"></div>
-					<button class="blackBtn" id="btnImportBack">Retour</button>
-					<button class="blackBtn" id="btnStartImport">Importer</button>
-				</section>
+		<section id="exportSection">
+			<h2>Export JSON</h2>
+			<textarea id="exportArea"></textarea><br>
+			<button class="blackBtn" id="btnExportBack">Retour</button>
+		</section>
+
+		<section id="importSection">
+			<h2>Import JSON</h2>
+			<textarea id="importArea"></textarea><br>
+			<div id="importErrorMessage"></div>
+			<button class="blackBtn" id="btnImportBack">Retour</button>
+			<button class="blackBtn" id="btnStartImport">Importer</button>
+		</section>
 
         <footer id="footer">
-            <h1>Score total <span></span></h1>
+            <h1>Résultat : <span></span></h1>
             <ul id="scoreList">
                     <!-- score list -->
             </ul>
-						<span id="elabel"></span>
+			<span id="elabel"></span>
             <div id="comment">
                 <h2><label for="commentArea">Commentaire</label></h2>
-                	<textarea id="commentArea" placeholder="Saisir un commentaire..."></textarea>
+				<textarea id="commentArea" placeholder="Saisir un commentaire..."></textarea>
             </div>
-						<div id="eof">
-            	<button id="resetButton">Reset</button>
-            	<span id="version">Version 2.2 (RGAA 3 - 2016) - <a href="https://github.com/SylvainBzh/rgaa-calculator">Calculateur-RGAA sur github</a></span>
-						</div>
+			<div id="eof">
+				<button id="resetButton">Reset</button>
+				<span id="version">Version 2.3 (RGAA 3 - 2016) - <a href="https://github.com/SylvainBzh/rgaa-calculator">Calculateur-RGAA sur github</a></span>
+			</div>
         </footer>
 
-				<div id="jsonToImport"></div>
+			<div id="jsonToImport"></div>
 
-				<script type="text/template" id="reportTemplate">
-					<!DOCTYPE html>
-					<html lang="fr">
-						<head>
-							<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-							<title>Rapport accessiblité: <%=v.title%></title>
-							<link id="defaultStyle" rel="stylesheet" href="reportDefault.css">
-							<%=v.style%>
-						</head>
-						<body>
-							<header>
-								<h1><%=v.title%></h1>
+			<script type="text/template" id="reportTemplate">
+				<!DOCTYPE html>
+				<html lang="fr">
+					<head>
+						<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+						<title>Rapport accessiblité: <%=v.title%></title>
+						<link id="defaultStyle" rel="stylesheet" href="reportDefault.css">
+						<%=v.style%>
+					</head>
+					<body>
+						<header>
+							<h1><%=v.title%></h1>
+							<section>
 								<%=v.header%>
-							</header>
-							<%=v.body%>
-						</body>
-					</html>
-				</script>
+							</section>
+						</header>
+						<%=v.body%>
+					</body>
+						<footer>												
+							<span><a href="https://github.com/SylvainBzh/rgaa-calculator">Calculateur-RGAA</a></span>
+						</div>
+					</footer>
+				</html>
+			</script>
 	</body>
 
 </html>
